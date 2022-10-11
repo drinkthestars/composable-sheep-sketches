@@ -35,11 +35,16 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.compose.design)
+    implementation(libs.bundles.accompanist)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.activity)
+    implementation(libs.compose.extended.icons)
+    implementation(libs.bundles.compose.jetpack)
     implementation(libs.bundles.coroutines)
     implementation(libs.compose.ui.preview)
+    implementation(libs.compose.material.icons)
+    implementation(libs.compose.material)
     implementation(libs.graphics.glm)
-    implementation(libs.bundles.compose.jetpack)
-    implementation(libs.bundles.accompanist)
+
     debugImplementation(libs.debug.compose.ui.tooling)
 }

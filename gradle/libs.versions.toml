@@ -60,6 +60,7 @@ jetpack-lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler",
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose-core" }
 compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-core" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose-core" }
+compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-core" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 compose-extended-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-core" }
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activity" }

@@ -62,7 +62,7 @@ fun ComposableSheep(
         drawLegs(
             circleCenterOffset = circleCenterOffset,
             circleRadius = circleRadius,
-            sheep = sheep,
+            legs = sheep.legs,
             legColor = legColor,
             showGuidelines = showGuidelines
         )
@@ -70,7 +70,7 @@ fun ComposableSheep(
         drawFluff(
             circleCenterOffset = circleCenterOffset,
             circleRadius = circleRadius,
-            sheep = sheep,
+            fluffStyle = sheep.fluffStyle,
             fluffBrush = fluffBrush,
             showGuidelines = showGuidelines
         )
@@ -78,7 +78,7 @@ fun ComposableSheep(
         drawHead(
             circleCenterOffset = circleCenterOffset,
             circleRadius = circleRadius,
-            sheep = sheep,
+            headAngle = sheep.headAngle,
             headColor = headColor,
             eyeColor = eyeColor,
             glassesColor = glassesColor,

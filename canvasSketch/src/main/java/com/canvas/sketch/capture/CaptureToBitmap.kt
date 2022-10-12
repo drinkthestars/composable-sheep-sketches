@@ -7,16 +7,12 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.PixelCopy
 import android.view.Window
-import androidx.annotation.RequiresApi
-import java.io.OutputStreamx
 
 // API Level 28
 fun captureAndShare(
@@ -58,7 +54,7 @@ private fun Context.getActivityWindow(): Window {
             is ContextWrapper -> this.baseContext.getActivity()
             else -> throw IllegalStateException(
                 "Context is not an Activity context, but a ${javaClass.simpleName} context. " +
-                        "An Activity context is required to get a Window instance"
+                    "An Activity context is required to get a Window instance"
             )
         }
     }

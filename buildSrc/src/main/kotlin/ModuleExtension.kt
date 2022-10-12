@@ -1,10 +1,10 @@
 object ModuleExtension {
-    const val compileSdkVersion = 31
+    const val compileSdkVersion = 33
     const val jvmTarget = "1.8"
 
     object DefaultConfigs {
         const val minSdkVersion = 26
-        const val targetSdkVersion = 31
+        const val targetSdkVersion = 33
         const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         const val defaultConsumerProguardFiles = "consumer-rules.pro"
         const val proGuardRules = "proguard-rules.pro"

@@ -82,16 +82,17 @@ fun Grid() {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            GridSketch(random, modifier = Modifier
-                .onGloballyPositioned {
-                    size = it.size
-                    boundsInWindow = it.boundsInWindow()
-                }
+            GridSketch(
+                random,
+                modifier = Modifier
+                    .onGloballyPositioned {
+                        size = it.size
+                        boundsInWindow = it.boundsInWindow()
+                    }
             )
         }
     }
 }
-
 
 @Composable
 private fun GridSketch(random: Float, modifier: Modifier = Modifier) {
@@ -108,7 +109,6 @@ private fun GridSketch(random: Float, modifier: Modifier = Modifier) {
                     val summedY = originalY + dragAmount.y
                     val newValueY = summedY.coerceIn(0f, size.height)
                     offsetY = newValueY
-
                 }
             }
     ) { time ->
@@ -162,7 +162,6 @@ private fun GridSketch(random: Float, modifier: Modifier = Modifier) {
 //                    color = Color.hsv(noise * 200f + random * 160f, noise, 1f),
 //                    style = Fill
 //                )
-
             }
         }
     }

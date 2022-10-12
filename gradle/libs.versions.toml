@@ -16,7 +16,8 @@ lifecycle = "2.4.1"
 room = "2.4.2"
 
 #compose
-compose-core = "1.1.1"
+compose-core = "1.2.1"
+compose-compiler = "1.3.2"
 compose-navigation = "2.4.0-alpha06"
 compose-navigation-hilt = "1.0.0"
 compose-paging = "1.0.0-alpha14"
@@ -31,8 +32,8 @@ coroutinesTest = "1.5.2"
 mockWebServer = "4.9.3"
 
 #plugins
-gradle = "7.1.1"
-kotlin = "1.6.10"
+gradle = "7.3.0"
+kotlin = "1.7.20"
 ktlint = "10.2.1"
 detekt = "1.19.0"
 
@@ -116,6 +117,7 @@ compose-jetpack = [
     "compose-navigation",
     "compose-navigation-hilt",
 ]
+
 accompanist = [
     "accompanist-drawablepainter",
     "accompanist-systemuicontroller",
@@ -125,9 +127,10 @@ accompanist = [
 ]
 
 [plugins]
+kotlin-serialization = { id = "plugin.serialization", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-application = { id = "com.android.application", version.ref = "gradle" }
-library = { id = "com.android.library", version.ref = "gradle" }
-ktlint = { id = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
-detekt = { id = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "gradle" }
+android-library = { id = "com.android.library", version.ref = "gradle" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

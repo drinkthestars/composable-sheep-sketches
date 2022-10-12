@@ -1,18 +1,17 @@
 // TODO: get plugins from version catalog once this issue is tackled: https://youtrack.jetbrains.com/issue/KTIJ-19369
 @Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 plugins {
-    id("com.android.application").version("7.1.1").apply(false)
-    id("com.android.library").version("7.1.1").apply(false)
-    id("org.jetbrains.kotlin.android").version("1.6.10").apply(false)
-    kotlin("plugin.serialization") version "1.6.10"
-    id(Plugins.ktlint).version(libs.plugins.ktlint.get().version.toString())
-    id(Plugins.detekt).version(libs.plugins.detekt.get().version.toString())
+    id(libs.plugins.android.application.get().pluginId).version(libs.versions.gradle.get()).apply(false)
+    id(libs.plugins.android.library.get().pluginId).version(libs.versions.gradle.get()).apply(false)
+    id(libs.plugins.kotlin.android.get().pluginId).version(libs.versions.kotlin.get()).apply(false)
+    kotlin(libs.plugins.kotlin.serialization.get().pluginId).version(libs.versions.kotlin.get())
+    id(libs.plugins.ktlint.get().pluginId).version(libs.versions.ktlint.get())
+    id(libs.plugins.detekt.get().pluginId).version(libs.versions.detekt.get())
 }
 
 buildscript {
     dependencies {
         classpath(libs.hilt.classpath)
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20")
     }
 }
 

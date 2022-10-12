@@ -18,10 +18,9 @@ import nstv.canvasExtensions.maths.getCircumferencePointForAngle
 import nstv.canvasExtensions.maths.getCurveControlPoint
 import nstv.canvasExtensions.maths.getMiddlePoint
 import nstv.sheep.model.FluffStyle
-import nstv.sheep.model.Sheep
 
 fun DrawScope.drawFluff(
-    sheep: Sheep,
+    fluffStyle: FluffStyle,
     circleRadius: Float,
     circleCenterOffset: Offset,
     fluffBrush: Brush = SolidColor(Color.LightGray),
@@ -29,7 +28,7 @@ fun DrawScope.drawFluff(
 ) {
 
     val fluffPoints: List<Offset> = getFluffPoints(
-        fluffPercentages = sheep.fluffStyle.fluffChunksPercentages,
+        fluffPercentages = fluffStyle.fluffChunksPercentages,
         radius = circleRadius,
         circleCenter = circleCenterOffset
     )

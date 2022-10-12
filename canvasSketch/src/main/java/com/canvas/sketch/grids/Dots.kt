@@ -1,4 +1,4 @@
-package com.drinkstars.composesketch.dots
+package com.canvas.sketch.grids
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,15 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Screenshot
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,14 +50,9 @@ import androidx.compose.ui.unit.dp
 import com.canvas.sketch.Sketch
 import com.canvas.sketch.SketchWithCache
 import com.canvas.sketch.TWO_PI
-import com.canvas.sketch.captureAndShare
+import com.canvas.sketch.capture.captureAndShare
 import com.canvas.sketch.lerp
-import com.drinkstars.composesketch.TWO_PI
-import com.drinkstars.composesketch.capture.captureAndShare
-import com.drinkstars.composesketch.lerp
-import com.drinkstars.composesketch.map
-import com.drinkstars.composesketch.sketch.Sketch
-import com.drinkstars.composesketch.sketch.SketchWithCache
+import com.canvas.sketch.map
 import glm_.Java.Companion.glm
 import glm_.glm.PIf
 import glm_.glm.linearRand
@@ -67,10 +60,8 @@ import glm_.glm.pow
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
-import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.random.Random
 
 private val Padding = 48.dp
 private const val DotCount = 10
@@ -124,7 +115,8 @@ fun NoisyXYRandomRectMesh(modifier: Modifier = Modifier) {
                 0f,
                 1f
             )
-        }) { dots: List<Offset>, dotCount: Int, _, randoms: List<Float> ->
+        }
+    ) { dots: List<Offset>, dotCount: Int, _, randoms: List<Float> ->
         drawMeshRect(dots, dotCount, paint, rectSize = size.width / dotCount - 1f, randoms)
     }
 }
@@ -154,7 +146,6 @@ fun HueNoisyXYMesh(modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 @Composable
 fun NoisyPoints(modifier: Modifier = Modifier) {
@@ -209,7 +200,8 @@ fun Random2DDots(modifier: Modifier = Modifier) {
     DotGrid(modifier) { u, v, x, y, time, dotCount, random ->
         val rand = random ?: 1f
         drawCircle(
-            color = DarkGray, radius = rand * 18f, center = Offset(
+            color = DarkGray, radius = rand * 18f,
+            center = Offset(
                 x, y
             )
         )
@@ -347,7 +339,7 @@ fun DotAnimatedRadiusAndCenterVariation(modifier: Modifier = Modifier) {
         drawCircle(
             color = DarkGray,
             radius = map(sin(u * PIf), -1f, 1f, 5f, 15f),
-            center = Offset(x, y = y + map(sin(u * 300f),-1f,1f,-10f,100f))
+            center = Offset(x, y = y + map(sin(u * 300f), -1f, 1f, -10f, 100f))
         )
 
 //
@@ -424,7 +416,6 @@ fun Lines2DNoise(modifier: Modifier = Modifier) {
             strokeWidth = 5f,
             color = DarkGray
         )
-
     }
 }
 
@@ -458,7 +449,8 @@ fun Lines3DNoise(modifier: Modifier = Modifier) {
                     sourceMax = (size.width + size.height),
                     destMin = 270f,
                     destMax = 320f
-                ), saturation = 1f, value = 1f
+                ),
+                saturation = 1f, value = 1f
             )
         )
     }
@@ -583,7 +575,8 @@ fun DotsAroundCircleWavy(modifier: Modifier = Modifier) {
                 sourceMax = 15f,
                 destMin = 130f,
                 destMax = 230f
-            ), saturation = 1f, value = 1f
+            ),
+            saturation = 1f, value = 1f
         )
         val effectiveColor = if (isInCircle) color else DarkGray
         drawCircle(
@@ -609,7 +602,8 @@ fun DotsAroundCircleHalftones(modifier: Modifier = Modifier) {
                 sourceMax = 15f,
                 destMin = 200f,
                 destMax = 300f
-            ), saturation = v, value = 1f
+            ),
+            saturation = v, value = 1f
         )
         val effectiveColor = if (isInCircle) color else DarkGray
         drawCircle(
@@ -730,7 +724,8 @@ private fun DotGrid(
     }) { dotCount, onGloballyPositioned ->
         randoms = List(pow(dotCount, 2)) { linearRand(0f, 1f) }
         Sketch(
-            speed = speed, modifier = Modifier
+            speed = speed,
+            modifier = Modifier
                 .fillMaxSize(0.9f)
                 .aspectRatio(1f)
 //                .border(1.dp, DarkGray)
@@ -790,7 +785,8 @@ private fun GridContainer(
                 .align(Alignment.TopCenter)
                 .padding(16.dp)
         ) {
-            Slider(modifier = Modifier.fillMaxWidth(),
+            Slider(
+                modifier = Modifier.fillMaxWidth(),
                 value = dotCount.toFloat(),
                 valueRange = 3f..50f,
                 onValueChange = { dotCount = it.toInt() }
@@ -909,7 +905,8 @@ private fun DrawScope.drawPathWithHue(
                 sourceMax = (width + height),
                 destMin = hueMin,
                 destMax = hueMax
-            ), saturation = 0.7f, value = 1f
+            ),
+            saturation = 0.7f, value = 1f
         ),
         path = path
     )
@@ -969,9 +966,12 @@ private fun DrawScope.drawRotatedText(
                 dot.x,
                 dot.y,
             )
-            canvas.nativeCanvas.drawText("|", dot.x, dot.y, paint.apply {
-                textSize = size * 2f + time
-            })
+            canvas.nativeCanvas.drawText(
+                "|", dot.x, dot.y,
+                paint.apply {
+                    textSize = size * 2f + time
+                }
+            )
         }
     }
 }

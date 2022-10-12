@@ -44,10 +44,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.canvas.sketch.capture.captureAndShare
 import kotlinx.coroutines.isActive
 import kotlin.math.roundToInt
 
-private val AnimationSpec = tween<Float>(5000, 0, easing = CubicBezierEasing(.46f,0.17f,.29f,.23f))
+private val AnimationSpec = tween<Float>(5000, 0, easing = CubicBezierEasing(.46f, 0.17f, .29f, .23f))
 
 @Composable
 fun RedrawCanvas(
@@ -131,14 +132,15 @@ fun SketchWithCache(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier
-                .onGloballyPositioned {
-                    size = it.size
-                    boundsInWindow = it.boundsInWindow()
-                }
-                .drawWithCache {
-                    onDrawWithCache(advance.value)
-                }
+            Box(
+                modifier = Modifier
+                    .onGloballyPositioned {
+                        size = it.size
+                        boundsInWindow = it.boundsInWindow()
+                    }
+                    .drawWithCache {
+                        onDrawWithCache(advance.value)
+                    }
             )
             Controls(fps, size, boundsInWindow)
         }

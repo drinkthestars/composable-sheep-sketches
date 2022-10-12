@@ -77,8 +77,8 @@ fun SheepViewerScreen(modifier: Modifier = Modifier) {
         )
         Text(
             text = "${fluffStyles[fluffStyleIndex].first} " +
-                    "| ${legs[legsIndex].first} " +
-                    "| ${floor(sheep.headAngle)}°"
+                "| ${legs[legsIndex].first} " +
+                "| ${floor(sheep.headAngle)}°"
         )
 
         Spacer(modifier = Modifier.height(Grid.Two))

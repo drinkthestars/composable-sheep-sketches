@@ -1,4 +1,4 @@
-package com.canvas.sketch
+package com.canvas.sketch.capture
 
 import android.app.Activity
 import android.content.ContentValues

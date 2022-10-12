@@ -44,6 +44,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.canvas.sketch.capture.captureAndShare
 import kotlinx.coroutines.isActive
 import kotlin.math.roundToInt
 

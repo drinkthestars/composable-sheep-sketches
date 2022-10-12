@@ -43,7 +43,7 @@ dependencies {
     implementation(libs.bundles.coroutines)
     implementation(libs.compose.ui.preview)
     implementation(libs.compose.material.icons)
-    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
     implementation(libs.graphics.glm)
 
     debugImplementation(libs.debug.compose.ui.tooling)

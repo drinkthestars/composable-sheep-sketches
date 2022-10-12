@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.canvas.sketch.Sketch
 import com.canvas.sketch.TWO_PI
-import com.canvas.sketch.captureAndShare
+import com.canvas.sketch.capture.captureAndShare
 import glm_.Java
 import glm_.glm.linearRand
 import glm_.glm.simplex

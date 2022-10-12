@@ -1,4 +1,4 @@
-package com.drinkstars.composesketch.dots
+package com.canvas.sketch.grids
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,15 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Screenshot
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,14 +50,9 @@ import androidx.compose.ui.unit.dp
 import com.canvas.sketch.Sketch
 import com.canvas.sketch.SketchWithCache
 import com.canvas.sketch.TWO_PI
-import com.canvas.sketch.captureAndShare
+import com.canvas.sketch.capture.captureAndShare
 import com.canvas.sketch.lerp
-import com.drinkstars.composesketch.TWO_PI
-import com.drinkstars.composesketch.capture.captureAndShare
-import com.drinkstars.composesketch.lerp
-import com.drinkstars.composesketch.map
-import com.drinkstars.composesketch.sketch.Sketch
-import com.drinkstars.composesketch.sketch.SketchWithCache
+import com.canvas.sketch.map
 import glm_.Java.Companion.glm
 import glm_.glm.PIf
 import glm_.glm.linearRand
@@ -939,10 +932,10 @@ private fun DrawScope.drawMeshRect(
                     )
                 ) {
                     "size of random values ${random.size} must be = dotCount ^ 2 (aka ${
-                    pow(
-                        dotCount,
-                        2
-                    )
+                        pow(
+                            dotCount,
+                            2
+                        )
                     }!"
                 }
                 if (random[i] > 0.5f) {

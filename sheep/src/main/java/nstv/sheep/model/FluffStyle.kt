@@ -5,8 +5,12 @@ import kotlin.random.Random
 const val MinAnglePercentage = 10.0
 const val MaxAnglePercentage = 20.0
 
-sealed class FluffStyle {
-    val fluffChunksPercentages: List<Double> by lazy { buildFluffPercentages() }
+sealed class FluffStyle(
+    fluffChunksPercentages: List<Double>? = null,
+) {
+    val fluffChunksPercentages: List<Double> by lazy {
+        fluffChunksPercentages ?: buildFluffPercentages()
+    }
 
     data class Uniform(val numberOfFluffChunks: Int) : FluffStyle()
 
@@ -21,10 +25,14 @@ sealed class FluffStyle {
         val minPercentage: Double = MinAnglePercentage,
         val maxPercentage: Double = MaxAnglePercentage
     ) : FluffStyle()
+
+    class Manual(
+        fluffChunksPercentages: List<Double>
+    ) : FluffStyle(fluffChunksPercentages)
 }
 
 internal fun FluffStyle.buildFluffPercentages(
-    totalPercentage: Double = 100.0
+    totalPercentage: Double = 100.0,
 ): List<Double> {
     val angleChunks: MutableList<Double> = mutableListOf()
 
@@ -56,4 +64,5 @@ private fun getNextAngleChunkPercentage(
             fluffStyle.minPercentage,
             fluffStyle.maxPercentage
         )
+        is FluffStyle.Manual -> fluffStyle.fluffChunksPercentages.getOrElse(index) { 0.0 }
     }

@@ -9,7 +9,6 @@ import com.canvas.sketch.map
 import glm_.glm
 import kotlin.math.sin
 
-
 fun DrawScope.drawGridFluff(
     time: Float,
     circleRadius: Float,

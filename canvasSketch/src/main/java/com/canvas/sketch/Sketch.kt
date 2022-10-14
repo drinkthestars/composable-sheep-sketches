@@ -3,6 +3,7 @@ package com.canvas.sketch
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -48,12 +49,12 @@ import com.canvas.sketch.capture.captureAndShare
 import kotlinx.coroutines.isActive
 import kotlin.math.roundToInt
 
-private val AnimationSpec = tween<Float>(5000, 0, easing = CubicBezierEasing(.46f, 0.17f, .29f, .23f))
+private val AnimationSpec = tween<Float>(7000, 50, easing = LinearEasing)
 
 @Composable
 fun RedrawCanvas(
     modifier: Modifier = Modifier,
-    speed: Float = 1f,
+    speed: Float = 0.1f,
     animationSpec: AnimationSpec<Float> = AnimationSpec,
     onDraw: DrawScope.(Float) -> Unit
 ) {
@@ -106,7 +107,7 @@ fun RedrawCanvas(
 @Composable
 fun SketchWithCache(
     modifier: Modifier = Modifier,
-    speed: Float = 1f,
+    speed: Float = 0.1f,
     showControls: Boolean = false,
     animationSpec: AnimationSpec<Float> = AnimationSpec,
     onDrawWithCache: CacheDrawScope.(Float) -> DrawResult
@@ -156,7 +157,7 @@ fun SketchWithCache(
 @Composable
 fun Sketch(
     modifier: Modifier = Modifier,
-    speed: Float = 1f,
+    speed: Float = 0.1f,
     showControls: Boolean = false,
     animationSpec: AnimationSpec<Float> = AnimationSpec,
     onDraw: DrawScope.(Float) -> Unit
@@ -203,7 +204,7 @@ fun Sketch(
 @Composable
 fun RedrawSketch(
     modifier: Modifier = Modifier,
-    speed: Float = 1f,
+    speed: Float = 0.1f,
     showControls: Boolean = false,
     animationSpec: AnimationSpec<Float> = AnimationSpec,
     onDraw: DrawScope.(Float) -> Unit

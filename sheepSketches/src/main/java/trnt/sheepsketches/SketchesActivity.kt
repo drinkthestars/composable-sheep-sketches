@@ -33,12 +33,18 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import nstv.design.theme.ComposableSheepTheme
 import nstv.design.theme.Grid
+import trnt.sheepsketches.Screen.FLUFF_ANGLES
 import trnt.sheepsketches.Screen.SPIRAL
+import trnt.sheepsketches.Screen.values
 import trnt.sheepsketches.screens.SpiralScreen
+import trnt.sheepsketches.screens.TrippyFluffAngles
 
 private enum class Screen {
     SPIRAL,
+    FLUFF_ANGLES
 }
+
+private val InitialScreen = FLUFF_ANGLES
 
 class SketchesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +66,7 @@ class SketchesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     var expanded by remember { mutableStateOf(false) }
-                    var selectedScreen by remember { mutableStateOf(SPIRAL) }
+                    var selectedScreen by remember { mutableStateOf(InitialScreen) }
 
                     Column(
                         modifier = Modifier
@@ -86,7 +92,7 @@ class SketchesActivity : ComponentActivity() {
                                 expanded = expanded,
                                 onDismissRequest = { expanded = false }
                             ) {
-                                Screen.values().forEach { screen ->
+                                values().forEach { screen ->
                                     DropdownMenuItem(
                                         text = { Text(text = screen.name) },
                                         onClick = {
@@ -105,6 +111,7 @@ class SketchesActivity : ComponentActivity() {
                         ) { screen ->
                             when (screen) {
                                 SPIRAL -> SpiralScreen()
+                                FLUFF_ANGLES -> TrippyFluffAngles()
                             }
                         }
                     }

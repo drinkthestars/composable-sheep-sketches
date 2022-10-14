@@ -8,6 +8,7 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+const val TotalPercentage = 100.0f
 val FullCircleAngleInRadians = Math.toRadians(360.0)
 
 /**

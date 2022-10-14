@@ -89,7 +89,7 @@ fun ComposableSheep(
     }
 }
 
-internal fun DrawScope.getDefaultSheepRadius() = size.width * 0.3f
+fun DrawScope.getDefaultSheepRadius() = size.width * 0.3f
 
 @Preview(showBackground = true, widthDp = 320)
 @Composable

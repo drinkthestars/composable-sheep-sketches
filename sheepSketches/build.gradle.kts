@@ -61,6 +61,7 @@ dependencies {
 
     implementation(libs.bundles.coroutines)
     implementation(libs.serialization.json)
+    implementation(libs.graphics.glm)
     implementation(libs.hilt.core)
     implementation(libs.jetpack.core)
     implementation(libs.jetpack.lifecycle)

@@ -41,13 +41,13 @@ private enum class ChangeStyle {
 
 private const val FluffMinAnglePercentage = 5.0
 private const val Speed = 1f
-private const val SpeedInterval = 2f * Speed
+private const val FullLoopTime = 0.5f * Speed
 
 @Composable
 fun TrippyFluffAngles(modifier: Modifier = Modifier) {
 
     var fluffChunksPercentages by remember { mutableStateOf(FluffStyle.Random().fluffChunksPercentages) }
-    var changeStyle by remember { mutableStateOf(Simplex) }
+    var changeStyle by remember { mutableStateOf(PairNones) }
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Sketch(
@@ -131,7 +131,7 @@ private fun getFluffChunksWithPairNones(
 
     for (index in 0 until numberOfFluffChunks) {
         val mappedFakeAngle = map(
-            time.mod(SpeedInterval) / SpeedInterval,
+            time.mod(FullLoopTime) / FullLoopTime,
             0f,
             1f,
             0f,

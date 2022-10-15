@@ -45,7 +45,7 @@ dependencies {
     implementation(libs.compose.ui.preview)
     implementation(libs.compose.material.icons)
     implementation(libs.compose.material3)
-    implementation(libs.graphics.glm)
+    api(libs.graphics.glm)
 
     debugImplementation(libs.debug.compose.ui.tooling)
 }

@@ -13,15 +13,18 @@ import nstv.canvasExtensions.guidelines.GuidelineAlpha
 import nstv.canvasExtensions.guidelines.GuidelineDashPattern
 import nstv.canvasExtensions.guidelines.GuidelineStrokeWidth
 import nstv.canvasExtensions.maths.getCircumferencePointForAngle
+import nstv.design.theme.SheepColor
+import nstv.sheep.getDefaultSheepRadius
 import nstv.sheep.model.Leg
+import nstv.sheep.model.twoLegsStraight
 
 private const val OverlapPercentage = 0.5f
 
 fun DrawScope.drawLegs(
-    circleCenterOffset: Offset,
-    circleRadius: Float,
-    legs: List<Leg>,
-    legColor: Color,
+    circleCenterOffset: Offset = this.center,
+    circleRadius: Float = this.getDefaultSheepRadius(),
+    legs: List<Leg> = twoLegsStraight(),
+    legColor: Color = SheepColor.Skin,
     showGuidelines: Boolean = false,
 ) {
     val circleDiameter = circleRadius.times(2f)

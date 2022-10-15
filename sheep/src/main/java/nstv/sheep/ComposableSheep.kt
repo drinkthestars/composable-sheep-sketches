@@ -8,6 +8,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nstv.design.theme.ComposableSheepTheme
@@ -56,7 +57,7 @@ fun ComposableSheep(
     showGuidelines: Boolean = false,
 ) {
     Canvas(modifier = modifier) {
-        val circleRadius = size.width * 0.3f
+        val circleRadius = getDefaultSheepRadius()
         val circleCenterOffset = Offset(size.width / 2f, size.height / 2f)
 
         drawLegs(
@@ -87,6 +88,8 @@ fun ComposableSheep(
         )
     }
 }
+
+fun DrawScope.getDefaultSheepRadius() = size.width * 0.3f
 
 @Preview(showBackground = true, widthDp = 320)
 @Composable

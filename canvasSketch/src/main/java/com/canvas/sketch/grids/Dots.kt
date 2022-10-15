@@ -932,10 +932,10 @@ private fun DrawScope.drawMeshRect(
                     )
                 ) {
                     "size of random values ${random.size} must be = dotCount ^ 2 (aka ${
-                        pow(
-                            dotCount,
-                            2
-                        )
+                    pow(
+                        dotCount,
+                        2
+                    )
                     }!"
                 }
                 if (random[i] > 0.5f) {

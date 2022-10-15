@@ -34,6 +34,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import nstv.design.theme.ComposableSheepTheme
 import nstv.design.theme.Grid
 import trnt.sheepsketches.Screen.FLOW_FIELD_FLUFF
+import trnt.sheepsketches.Screen.FLUFF_ANGLES
+import trnt.sheepsketches.Screen.FLUFF_PATH
 import trnt.sheepsketches.Screen.GAUSSIAN_GRID_FLUFF
 import trnt.sheepsketches.Screen.GRID_FLUFF
 import trnt.sheepsketches.Screen.SPIRAL
@@ -42,10 +44,19 @@ import trnt.sheepsketches.screens.FlowFieldFluff
 import trnt.sheepsketches.screens.GaussianGridFluff
 import trnt.sheepsketches.screens.GridFluff
 import trnt.sheepsketches.screens.SpiralScreen
+import trnt.sheepsketches.screens.TrippyFluffAngles
+import trnt.sheepsketches.screens.TrippyFluffPath
 
 private enum class Screen {
-    SPIRAL, GRID_FLUFF, GAUSSIAN_GRID_FLUFF, FLOW_FIELD_FLUFF
+    SPIRAL,
+    GRID_FLUFF,
+    GAUSSIAN_GRID_FLUFF,
+    FLOW_FIELD_FLUFF,
+    FLUFF_ANGLES,
+    FLUFF_PATH,
 }
+
+private val InitialScreen = FLUFF_PATH
 
 class SketchesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +78,7 @@ class SketchesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     var expanded by remember { mutableStateOf(false) }
-                    var selectedScreen by remember { mutableStateOf(SPIRAL) }
+                    var selectedScreen by remember { mutableStateOf(InitialScreen) }
 
                     Column(
                         modifier = Modifier
@@ -115,6 +126,8 @@ class SketchesActivity : ComponentActivity() {
                                 GRID_FLUFF -> GridFluff()
                                 GAUSSIAN_GRID_FLUFF -> GaussianGridFluff()
                                 FLOW_FIELD_FLUFF -> FlowFieldFluff()
+                                FLUFF_ANGLES -> TrippyFluffAngles()
+                                FLUFF_PATH -> TrippyFluffPath()
                             }
                         }
                     }

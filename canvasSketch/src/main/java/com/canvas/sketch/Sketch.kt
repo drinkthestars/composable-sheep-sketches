@@ -2,7 +2,6 @@ package com.canvas.sketch
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
-import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.tween

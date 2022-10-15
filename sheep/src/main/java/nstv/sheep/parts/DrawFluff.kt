@@ -17,12 +17,13 @@ import nstv.canvasExtensions.maths.distanceToOffset
 import nstv.canvasExtensions.maths.getCircumferencePointForAngle
 import nstv.canvasExtensions.maths.getCurveControlPoint
 import nstv.canvasExtensions.maths.getMiddlePoint
+import nstv.sheep.getDefaultSheepRadius
 import nstv.sheep.model.FluffStyle
 
 fun DrawScope.drawFluff(
-    fluffStyle: FluffStyle,
-    circleRadius: Float,
-    circleCenterOffset: Offset,
+    fluffStyle: FluffStyle = FluffStyle.Random(),
+    circleRadius: Float = this.getDefaultSheepRadius(),
+    circleCenterOffset: Offset = this.center,
     fluffBrush: Brush = SolidColor(Color.LightGray),
     showGuidelines: Boolean = false
 ) {

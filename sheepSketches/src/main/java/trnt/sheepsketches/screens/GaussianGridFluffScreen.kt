@@ -13,9 +13,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.canvas.sketch.Sketch
-import com.canvas.sketch.gaussianRandomNoise
-import com.canvas.sketch.map
-import glm_.gauss
 import glm_.glm
 import nstv.design.theme.ComposableSheepTheme
 import nstv.sheep.model.FluffStyle
@@ -23,7 +20,6 @@ import nstv.sheep.model.Sheep
 import nstv.sheep.parts.drawHead
 import nstv.sheep.parts.drawLegs
 import trnt.sheepsketches.draw.drawCustomDotFluff
-import trnt.sheepsketches.draw.drawGridFluff
 
 // Prob use slider for this 👀
 private val DotCount = 25

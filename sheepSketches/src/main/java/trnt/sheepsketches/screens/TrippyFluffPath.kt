@@ -14,22 +14,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import com.canvas.sketch.Sketch
+import nstv.design.theme.components.CheckBoxLabel
 import nstv.design.theme.components.SliderLabelValue
 import nstv.sheep.parts.drawHead
 import nstv.sheep.parts.drawLegs
-import trnt.sheepsketches.draw.drawTrippyFluffPath
+import trnt.sheepsketches.draw.drawTrippyFluffPathSimplex
+import trnt.sheepsketches.draw.drawTrippyFluffPathWithPerlin
 
 @Composable
 fun TrippyFluffPath(modifier: Modifier = Modifier) {
 
     var noiseMax by remember { mutableStateOf(2f) }
+    var usePerlin by remember { mutableStateOf(true) }
+    val path = remember { Path() }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        val path = remember { Path() }
         Sketch(
             speed = 1f,
             modifier = Modifier
@@ -40,20 +43,37 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
 
             drawLegs()
 
-            drawTrippyFluffPath(
-                path = path,
-                time = time,
-                noiseMax = noiseMax
-            )
+            if (usePerlin) {
 
+                drawTrippyFluffPathWithPerlin(
+                    path = path,
+                    time = time,
+                    noiseMax = noiseMax
+                )
+            } else {
+                drawTrippyFluffPathSimplex(
+                    time = time,
+                    noiseMax = noiseMax
+                )
+            }
             drawHead()
         }
+
         SliderLabelValue(
             text = "Max Noise",
             value = noiseMax,
             valueRange = 0f..10f,
             onValueChange = {
                 noiseMax = it
+            }
+        )
+
+        CheckBoxLabel(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Use Perlin",
+            checked = usePerlin,
+            onCheckedChange = { checked ->
+                usePerlin = checked
             }
         )
     }

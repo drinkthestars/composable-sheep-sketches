@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import com.canvas.sketch.map
 import glm_.glm
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import nstv.canvasExtensions.maths.FullCircleAngleInRadians
 import nstv.design.theme.SheepColor
@@ -17,7 +18,7 @@ import kotlin.math.sin
 
 private const val AngleStep = 0.1f
 
-fun DrawScope.drawTrippyFluffPath(
+fun DrawScope.drawTrippyFluffPathWithPerlin(
     path: Path,
     time: Float,
     noiseMax: Float,
@@ -26,7 +27,6 @@ fun DrawScope.drawTrippyFluffPath(
     fluffBrush: Brush = SolidColor(SheepColor.Orange),
 ) {
 
-//    val pointList = mutableListOf<Offset>()
     val minRadius = circleRadius * 0.95f
     val maxRadius = circleRadius * 1.2f
 
@@ -36,9 +36,6 @@ fun DrawScope.drawTrippyFluffPath(
 
         val cosAngle = cos(angle)
         val sinAngle = sin(angle)
-
-//        val xOffset = map(cosAngle, -1f, 1f, 0f, noiseMax)
-//        val yOffset = map(sinAngle, -1f, 1f, 0f, noiseMax)
 
         val xOffset = map(
             value = cos(timeShiftedRadius + time * 10f),
@@ -67,16 +64,48 @@ fun DrawScope.drawTrippyFluffPath(
 
         angle += AngleStep
     }
-//    pointList.add(pointList.first())
 
-//    val path = path.apply {
-//        pointList.firstOrNull()?.let {
-//            moveTo(it.x, it.y)
-//            pointList.forEach { offset ->
-//                lineTo(offset.x, offset.y)
-//            }
-//        }
-//    }
+    drawPath(path = path, brush = fluffBrush, style = Fill)
+}
+
+fun DrawScope.drawTrippyFluffPathSimplex(
+    time: Float,
+    noiseMax: Float,
+    circleRadius: Float = this.getDefaultSheepRadius(),
+    circleCenterOffset: Offset = this.center,
+    fluffBrush: Brush = SolidColor(SheepColor.Orange),
+) {
+    val pointList = mutableListOf<Offset>()
+    val minRadius = circleRadius * 0.95f
+    val maxRadius = circleRadius * 1.2f
+
+    var angle = 0.0
+    while (angle < FullCircleAngleInRadians) {
+        val cosAngle = cos(angle).toFloat()
+        val sinAngle = glm.sin(angle).toFloat()
+
+        val xOffset = map(cosAngle, -1f, 1f, 0f, noiseMax)
+        val yOffset = map(sinAngle, -1f, 1f, 0f, noiseMax)
+        val noise =
+            glm.simplex(
+                Vec2(
+                    xOffset, yOffset + time
+                )
+            )
+        val r = map(noise, -1f, 1f, minRadius, maxRadius)
+        pointList.add(Offset(r * cosAngle, r * sinAngle) + circleCenterOffset)
+        angle += AngleStep
+    }
+    pointList.add(pointList.first())
+
+    val path = Path().apply {
+        pointList.firstOrNull()?.let {
+            moveTo(it.x, it.y)
+            pointList.forEach { offset ->
+                lineTo(offset.x, offset.y)
+            }
+        }
+    }
 
     drawPath(path = path, brush = fluffBrush, style = Fill)
 }

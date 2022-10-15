@@ -13,22 +13,26 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.canvas.sketch.Sketch
+import com.canvas.sketch.gaussianRandomNoise
+import com.canvas.sketch.map
+import glm_.gauss
+import glm_.glm
 import nstv.design.theme.ComposableSheepTheme
 import nstv.sheep.model.FluffStyle
 import nstv.sheep.model.Sheep
 import nstv.sheep.parts.drawHead
 import nstv.sheep.parts.drawLegs
+import trnt.sheepsketches.draw.drawCustomDotFluff
 import trnt.sheepsketches.draw.drawGridFluff
 
 // Prob use slider for this 👀
 private val DotCount = 25
 
-// TODO: Use Gaussian randomness to have larger dots with different colors picked from a Hue range
 @Composable
 fun GaussianGridFluff(modifier: Modifier = Modifier) {
     val sheep = remember { Sheep() }
     Box(modifier = modifier.fillMaxSize()) {
-        GridFluffSheep(
+        GaussianGridFluffSheep(
             modifier = Modifier.fillMaxSize(),
             sheep = sheep,
             fluffBrush = SolidColor(sheep.fluffColor)
@@ -36,7 +40,6 @@ fun GaussianGridFluff(modifier: Modifier = Modifier) {
     }
 }
 
-// TODO: Use Gaussian randomness to have larger dots with different colors picked from a Hue range
 @Composable
 fun GaussianGridFluffSheep(
     modifier: Modifier,
@@ -49,10 +52,14 @@ fun GaussianGridFluffSheep(
     glassesTranslation: Float = sheep.glassesTranslation,
     showGuidelines: Boolean = false,
 ) {
+    val dotSizes = remember {
+        List(DotCount * DotCount) {
+            glm.gaussRand(15f, 5f)
+        }
+    }
     Sketch(modifier = modifier) { time ->
         val circleRadius = size.width * 0.3f
         val circleCenterOffset = Offset(size.width / 2f, size.height / 2f)
-
         drawLegs(
             circleCenterOffset = circleCenterOffset,
             circleRadius = circleRadius,
@@ -61,11 +68,15 @@ fun GaussianGridFluffSheep(
             showGuidelines = showGuidelines
         )
 
-        drawGridFluff(
+        // min/max = 2 std deviations from mean for gaussian distro
+        drawCustomDotFluff(
             time = time,
             circleCenterOffset = circleCenterOffset,
             circleRadius = circleRadius,
-            dotCount = DotCount
+            dotCount = DotCount,
+            dotSizes = dotSizes,
+            minDotSize = 5f,
+            maxDotSize = 25f
         )
 
         drawHead(
@@ -83,9 +94,9 @@ fun GaussianGridFluffSheep(
 
 @Preview(showBackground = true, widthDp = 320, backgroundColor = 0xFF292C34)
 @Composable
-private fun PreviewSheepGuidelines() {
+private fun PreviewGaussianGridFluffSheep() {
     ComposableSheepTheme {
-        GridFluffSheep(
+        GaussianGridFluffSheep(
             modifier = Modifier.size(300.dp),
             sheep = Sheep(FluffStyle.Random()),
             fluffBrush = SolidColor(Color.LightGray),

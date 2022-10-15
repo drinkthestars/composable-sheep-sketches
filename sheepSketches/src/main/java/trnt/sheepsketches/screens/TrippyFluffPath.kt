@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import com.canvas.sketch.Sketch
 import nstv.design.theme.components.SliderLabelValue
@@ -28,16 +29,22 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
+        val path = remember { Path() }
         Sketch(
-            speed = 0.01f,
+            speed = 1f,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
         ) { time ->
+            path.reset()
 
             drawLegs()
 
-            drawTrippyFluffPath(time = time, noiseMax = noiseMax)
+            drawTrippyFluffPath(
+                path = path,
+                time = time,
+                noiseMax = noiseMax
+            )
 
             drawHead()
         }

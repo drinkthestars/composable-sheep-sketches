@@ -5,6 +5,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.canvas.sketch.map
+import glm_.glm
+import glm_.vec3.Vec3
 import nstv.canvasExtensions.guidelines.GuidelineAlpha
 import nstv.canvasExtensions.guidelines.GuidelineStrokeWidth
 import nstv.canvasExtensions.maths.toDegrees
@@ -28,44 +31,57 @@ fun DrawScope.drawSpiral(
     time: Float,
     numberOfPoints: Int = 50,
     spiralType: SpiralType = Archimedean,
+    noiseMax: Float = 25f,
     uniformPointDiameter: Boolean = true,
+    spin: Boolean = false,
+    noiseColor: Boolean = false,
+    noisePointDiameter: Boolean = false,
     counterclockwise: Boolean = false,
     useSheep: Boolean = false,
     showGuidelines: Boolean = false,
+
 ) {
     val path = Path().apply { moveTo(center.x, center.y) }
 
-    var previousPoint = Offset(center.x, center.y)
     for (index in 0 until numberOfPoints) {
 
         val (angle, radius) = getAngleAndRadius(
-            time = time,
             index = index,
             spiralType = spiralType,
-            counterclockwise = counterclockwise,
         )
 
-        val colorHue = angle.toDegrees().mod(360f)
-        val x = radius * cos(angle) + center.x
-        val y = radius * sin(angle) + center.y
-        val pointRadius = if (uniformPointDiameter) 28f else radius.div(10f)
+        val adjustedTime = 1.5f * if (counterclockwise) -time else time
+        val timeShiftedAngle = angle + if (spin) adjustedTime else 0f
+        val x = radius * cos(timeShiftedAngle) + center.x
+        val y = radius * sin(timeShiftedAngle) + center.y
+
+        val perlinNoise = glm.perlin(Vec3(x = angle, y = radius, z = time * 1.5f))
+        val angleDegrees = angle.toDegrees().mod(360f)
+        val angleNoise = if (noiseColor) {
+            map(
+                value = perlinNoise,
+                sourceMin = -1f,
+                sourceMax = 1f,
+                destMin = angleDegrees - noiseMax * 0.2f,
+                destMax = angleDegrees + noiseMax * 0.2f
+            )
+        } else angleDegrees
+
+        val colorHue = angleNoise.toDegrees().mod(360f)
+        val basePointRadius = if (uniformPointDiameter) 28f else radius.div(10f)
+        val pointRadius = if (noisePointDiameter) {
+            map(
+                value = perlinNoise,
+                sourceMin = -1f,
+                sourceMax = 1f,
+                destMin = basePointRadius - noiseMax,
+                destMax = basePointRadius + noiseMax
+            )
+        } else basePointRadius
+
         val newPoint = Offset(x, y)
 
         if (showGuidelines) {
-//            val controlPoint = getCurveControlPoint(previousPoint, newPoint, center)
-//            path.apply {
-//                quadraticBezierTo(
-//                    x1 = controlPoint.x,
-//                    y1 = controlPoint.y,
-//                    x2 = x,
-//                    y2 = y
-//                )
-//            }
-//            drawCircle(
-//                color = Color.Black.copy(alpha = GuidelineAlpha.low),
-//                radius = 2f,
-//                center = controlPoint
-//            )
             path.apply { lineTo(newPoint.x, newPoint.y) }
         }
 
@@ -90,7 +106,6 @@ fun DrawScope.drawSpiral(
                 center = newPoint
             )
         }
-        previousPoint = newPoint
     }
 
     if (showGuidelines) {
@@ -105,29 +120,23 @@ fun DrawScope.drawSpiral(
 }
 
 private fun getAngleAndRadius(
-    time: Float,
     index: Int,
     spiralType: SpiralType,
-    counterclockwise: Boolean = false,
 ): Pair<Float, Float> {
-    val adjustedTime = 1.5f * if (counterclockwise) -time else time
-
     return when (spiralType) {
         Phyllotaxis -> {
             val pointSeparation = 70f
             val angle = (index * 137.5f).toRadians()
             val radius = pointSeparation * sqrt(index.toFloat())
-            val timeShiftedAngle = angle + adjustedTime
 
-            timeShiftedAngle to radius
+            angle to radius
         }
         Archimedean -> {
             val pointSeparation = 20f
             val angle = (index.toFloat() * pointSeparation).toRadians()
             val radius = pointSeparation * angle
 
-            val timeShiftedAngle = angle + adjustedTime
-            timeShiftedAngle to radius
+            angle to radius
         }
         Logarithmic -> {
             val pointSeparation = 30f
@@ -135,8 +144,7 @@ private fun getAngleAndRadius(
             // val angle = (index.toFloat() * 15f).toRadians() * 1.5f
             val radius = (pointSeparation / 2f) * exp(angle / (pointSeparation / 4f))
 
-            val timeShiftedAngle = angle + adjustedTime
-            timeShiftedAngle to radius
+            angle to radius
         }
     }
 }

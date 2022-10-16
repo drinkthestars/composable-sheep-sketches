@@ -89,7 +89,7 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
 
         CheckBoxLabel(
             modifier = Modifier.fillMaxWidth(),
-            text = "SHEEP!",
+            text = "SHEEP IT!",
             checked = useSheep,
             onCheckedChange = { useSheep = it }
         )

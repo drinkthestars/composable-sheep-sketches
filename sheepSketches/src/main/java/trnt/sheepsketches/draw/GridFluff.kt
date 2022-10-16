@@ -8,8 +8,72 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.canvas.sketch.TWO_PI
 import com.canvas.sketch.lerp
 import com.canvas.sketch.map
+import glm_.Java
 import glm_.glm
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
+import kotlin.math.cos
 import kotlin.math.sin
+
+fun DrawScope.drawFlowFieldFluff(
+    time: Float,
+    circleRadius: Float,
+    circleCenterOffset: Offset,
+    dotCount: Int
+) {
+    (0 until dotCount).forEach { x ->
+        (0 until dotCount).forEach { y ->
+            // working between 0 and 1 aka U/V Space
+            val u = x / (dotCount - 1).toFloat()
+            val v = y / (dotCount - 1).toFloat()
+
+            // lerp to get a value between 0 and 1
+            val posX = lerp(
+                min = circleCenterOffset.x - circleRadius,
+                max = circleCenterOffset.x + circleRadius,
+                norm = u
+            )
+            val posY = lerp(
+                min = circleCenterOffset.y - circleRadius,
+                max = circleCenterOffset.y + circleRadius,
+                norm = v
+            )
+
+            val isInCircle = isInCircle(posX, posY, circleRadius)
+            if (isInCircle) {
+                // Lines 4D NOISE
+                val r = 35f
+                val startX = posX - r / 2f
+                val startY = posY - r / 2f
+
+                val noise = Java.glm.simplex(
+                    Vec4(
+                        x = u,
+                        y = v,
+                        z = 15f * cos(TWO_PI * time / 5f),
+                        w = 15f * sin(TWO_PI * time / 5f)
+                    )
+                )
+                val radians = noise * TWO_PI
+
+                val endX = startX + (r * sin(radians))
+                val endY = startY + (r * cos(radians))
+                // Rainbow
+                // val hue = (noise * 360f).absoluteValue
+                val hue = map(noise, -1f, 1f, 170f, 300f)
+                val color = Color.hsv(
+                    hue = hue, saturation = 1f, value = 1f
+                )
+                drawLine(
+                    start = Offset(startX, startY),
+                    strokeWidth = 4f,
+                    end = Offset(endX, endY),
+                    color = color
+                )
+            }
+        }
+    }
+}
 
 fun DrawScope.drawCustomDotFluff(
     time: Float,

@@ -3,6 +3,7 @@ package nstv.canvasExtensions.maths
 import androidx.compose.ui.geometry.Offset
 import kotlin.math.PI
 import kotlin.math.atan
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -35,6 +36,24 @@ fun getCircumferencePointForAngle(
 }
 
 /**
+ * Returns the angle from the x axis in radians for a given position.
+ * The angle is always positive and comes from the polar coordinates system.
+ *
+ **/
+internal fun getCircumferenceAngleInRadiansForPoint(
+    point: Offset,
+    center: Offset = Offset.Zero,
+): Float {
+    var angle = atan2(point.y - center.y, point.x - center.x)
+    if (angle < 0) {
+        // atan2 returns values in the range [-PI, PI]
+        // We want values in the range [0, 2PI]
+        angle += (2 * Math.PI).toFloat()
+    }
+    return angle
+}
+
+/**
  * Objective:
  * Get the control point for the Quadratic Bezier Curve.
  * The control point is perpendicular to the line between p1&p2, passing through the middle of it
@@ -54,7 +73,16 @@ fun getCircumferencePointForAngle(
  * - slope relation to angle: m = (y-y0)/(x-x0) = tan(angle) => angle = tan^-1(m)
  *
  */
-fun getCurveControlPoint(p1: Offset, p2: Offset, center: Offset): Offset {
+fun getCurveControlPoint(
+    p1: Offset,
+    p2: Offset,
+    center: Offset,
+): Offset {
+
+    if (p1 == p2) {
+        return p1
+    }
+
     // 1. get initial line formula slope
     val m1 = p1.getSlopeTo(p2)
 
@@ -66,24 +94,31 @@ fun getCurveControlPoint(p1: Offset, p2: Offset, center: Offset): Offset {
 
     val radius = p2.distanceToOffset(p1).div(2)
 
-    var angle = atan(m2).toDouble()
+    val angle = atan(m2).toDouble()
 
     /**
      * The angle obtained starts in the x axis up, using it we get a fluff opening to the right,
      * but the perpendicular line cuts the helper circle in 2 spaces: in angle and in angle + 180°.
-     * If the center of the helper circle is in the left from the center of the circle, it means
-     * the fluff should curve to the left instead of from the right of the line between p1 and p2,
-     * so we need to use the "opposite angle" to get the "opposite point", hence we add 180°(PI)
+     * We obtain both points and choose the one that is farthest from the center
      * */
-    if (middlePoint.x < center.x) {
-        angle += PI
-    }
 
-    return getCircumferencePointForAngle(
+    val cp1 = getCircumferencePointForAngle(
         angleInRadians = angle,
         radius = radius,
         circleCenter = middlePoint
     )
+
+    val cp2 = getCircumferencePointForAngle(
+        angleInRadians = angle + PI,
+        radius = radius,
+        circleCenter = middlePoint
+    )
+
+    return if (cp1.squareDistanceToOffset(center) > cp2.squareDistanceToOffset(center)) {
+        cp1
+    } else {
+        cp2
+    }
 }
 
 fun getMiddlePoint(p1: Offset, p2: Offset): Offset {
@@ -101,7 +136,10 @@ fun getRectTopLeftForDiagonal(lineStart: Offset, lineEnd: Offset) = Offset(
  * Good ol' Pythagoras h^2 = a^2 + b^2 => distance^2 = (x1 - x0)^2 + (y1 - y0)^2
  */
 fun Offset.distanceToOffset(offset: Offset): Float =
-    sqrt((offset.x - this.x).pow(2) + (offset.y - this.y).pow(2))
+    sqrt(squareDistanceToOffset(offset))
+
+fun Offset.squareDistanceToOffset(offset: Offset): Float =
+    (offset.x - this.x).pow(2) + (offset.y - this.y).pow(2)
 
 /**
  * line formula: y = mx + b where m is the slope and b is the yIntercept

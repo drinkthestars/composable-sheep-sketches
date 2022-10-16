@@ -56,7 +56,7 @@ private enum class Screen {
     FLUFF_PATH,
 }
 
-private val InitialScreen = FLUFF_PATH
+private val InitialScreen = SPIRAL
 
 class SketchesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

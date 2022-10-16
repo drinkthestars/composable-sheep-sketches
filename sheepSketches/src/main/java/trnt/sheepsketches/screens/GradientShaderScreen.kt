@@ -5,27 +5,27 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nstv.design.theme.ComposableSheepTheme
+import nstv.design.theme.Grid
+import nstv.design.theme.TextUnit
+import nstv.sheep.drawComposableSheep
 import nstv.sheep.model.FluffStyle
 import nstv.sheep.model.Sheep
-import nstv.sheep.parts.drawHead
-import nstv.sheep.parts.drawLegs
-import nstv.sheep.parts.getFluffPath
-import nstv.sheep.parts.getFluffPoints
 import trnt.sheepsketches.draw.SketchWithCache
 
 // Prob use slider for this 👀
@@ -35,20 +35,27 @@ private val DotCount = 30
 @Composable
 fun GradientShaderFluff(modifier: Modifier = Modifier) {
     val sheep = remember { Sheep() }
-    Box(modifier = modifier.fillMaxSize()) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onErrorContainer,
+                contentColor = MaterialTheme.colorScheme.onError
+            ),
+            modifier = modifier
+                .fillMaxWidth(),
+        ) {
+            Text(
+                modifier = Modifier.padding(Grid.Two),
+                fontSize = TextUnit.Sixteen,
+                text = "Oh no! Gradient Shader Fluff requires Android 13 (API 33)!"
+            )
+        }
+    } else {
+        Box(modifier = modifier.fillMaxSize()) {
             GradientShaderFluffSheep(
                 modifier = Modifier.fillMaxSize(),
                 sheep = sheep
             )
-        } else {
-            Card(
-                modifier = modifier
-                    .wrapContentSize()
-                    .padding(16.dp),
-            ) {
-                Text(text = "Flow Field Fluff requires Android 13 (API 33)!")
-            }
         }
     }
 }
@@ -58,26 +65,10 @@ fun GradientShaderFluff(modifier: Modifier = Modifier) {
 fun GradientShaderFluffSheep(
     modifier: Modifier,
     sheep: Sheep,
-    headColor: Color = sheep.headColor,
-    legColor: Color = sheep.legColor,
-    eyeColor: Color = sheep.eyeColor,
-    glassesColor: Color = sheep.glassesColor,
-    glassesTranslation: Float = sheep.glassesTranslation,
-    showGuidelines: Boolean = false,
+    gradientShader: RuntimeShader = remember { getGradientShader() },
+    gradientShaderBrush: ShaderBrush = remember { ShaderBrush(gradientShader) },
 ) {
     SketchWithCache(modifier = modifier) { time ->
-        val circleRadius = size.width * 0.3f
-        val circleCenterOffset = Offset(size.width / 2f, size.height / 2f)
-        val fluffPoints: List<Offset> = getFluffPoints(
-            fluffPercentages = sheep.fluffStyle.fluffChunksPercentages,
-            radius = circleRadius,
-            circleCenter = circleCenterOffset
-        )
-        val fluffPath = getFluffPath(
-            fluffPoints = fluffPoints,
-            circleRadius = circleRadius,
-            circleCenterOffset = circleCenterOffset,
-        )
         gradientShader.setFloatUniform(
             "iResolution",
             this.size.width, this.size.height
@@ -85,23 +76,9 @@ fun GradientShaderFluffSheep(
         gradientShader.setFloatUniform("iTime", time.value)
 
         onDrawBehind {
-            drawLegs(
-                circleCenterOffset = circleCenterOffset,
-                circleRadius = circleRadius,
-                legs = sheep.legs,
-                legColor = legColor,
-                showGuidelines = showGuidelines
-            )
-            drawPath(path = fluffPath, brush = gradientShaderBrush)
-            drawHead(
-                circleCenterOffset = circleCenterOffset,
-                circleRadius = circleRadius,
-                headAngle = sheep.headAngle,
-                headColor = headColor,
-                eyeColor = eyeColor,
-                glassesColor = glassesColor,
-                glassesTranslation = glassesTranslation,
-                showGuidelines = showGuidelines
+            drawComposableSheep(
+                sheep = sheep,
+                fluffBrush = gradientShaderBrush,
             )
         }
     }
@@ -121,7 +98,7 @@ private fun FlowFieldFluffSheepPreview() {
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-val gradientShader = RuntimeShader(
+private fun getGradientShader() = RuntimeShader(
     """
         uniform float2 iResolution;
         uniform float iTime;
@@ -145,6 +122,3 @@ val gradientShader = RuntimeShader(
         }
     """
 )
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-val gradientShaderBrush = ShaderBrush(gradientShader)

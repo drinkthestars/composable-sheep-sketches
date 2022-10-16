@@ -54,7 +54,7 @@ fun DrawScope.drawFluff(
 /**
  * Returns the coordinates (points) of the middle points between fluff chunks.
  */
-private fun getFluffPoints(
+fun getFluffPoints(
     fluffPercentages: List<Double>,
     radius: Float,
     circleCenter: Offset = Offset.Zero,

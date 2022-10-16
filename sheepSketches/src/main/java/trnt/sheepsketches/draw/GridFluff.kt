@@ -1,6 +1,8 @@
 package trnt.sheepsketches.draw
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode.Companion.DstOver
+import androidx.compose.ui.graphics.BlendMode.Companion.SrcOver
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.canvas.sketch.TWO_PI
@@ -38,11 +40,11 @@ fun DrawScope.drawCustomDotFluff(
 
             val isInCircle = isInCircle(posX, posY, circleRadius)
             if (isInCircle) {
-                val maxDotSizeDelta = 8f
-                val minDotSizeDelta = 5f
+                val maxDotSizeDelta = 10f
+                val minDotSizeDelta = 6f
                 val originalSize = dotSizes[dotCount * x + y]
                 val newSize = originalSize + map(
-                    sin((v + time * 40) * TWO_PI) + glm.cos((u + time * 20) * TWO_PI),
+                    sin((v * 2f + time * 40) * TWO_PI) + glm.cos((u * 2f + time * 20) * TWO_PI),
                     -2f, 2f,
                     minDotSizeDelta, maxDotSizeDelta
                 )
@@ -63,7 +65,7 @@ fun DrawScope.drawCustomDotFluff(
                         minDotSize = minDotSize + minDotSizeDelta,
                         maxDotSize = maxDotSize + maxDotSizeDelta
                     ),
-                    saturation = 0.3f, value = 0.5f
+                    saturation = 0.4f, value = 1f, alpha = 0.9f
                 )
                 drawCircle(
                     color = color,
@@ -82,9 +84,9 @@ private fun hue(
     minHue: Float = 200f,
     maxHue: Float = 300f
 ) = map(
-    value = size,
-    sourceMin = minDotSize,
-    sourceMax = maxDotSize,
+    value = size + 100,
+    sourceMin = minDotSize + 100,
+    sourceMax = maxDotSize + 100,
     destMin = maxHue,
     destMax = minHue
 ).coerceIn(minHue, maxHue)

@@ -52,9 +52,11 @@ fun GaussianGridFluffSheep(
     glassesTranslation: Float = sheep.glassesTranslation,
     showGuidelines: Boolean = false,
 ) {
+    val mean = 15f
+    val stdDev = 5f
     val dotSizes = remember {
         List(DotCount * DotCount) {
-            glm.gaussRand(15f, 5f)
+            glm.gaussRand(mean, stdDev)
         }
     }
     Sketch(modifier = modifier) { time ->
@@ -75,8 +77,8 @@ fun GaussianGridFluffSheep(
             circleRadius = circleRadius,
             dotCount = DotCount,
             dotSizes = dotSizes,
-            minDotSize = 5f,
-            maxDotSize = 25f
+            minDotSize = mean - 2 * stdDev,
+            maxDotSize = mean + 2 * stdDev,
         )
 
         drawHead(

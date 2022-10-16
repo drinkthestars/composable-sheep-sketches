@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.canvas.sketch.RedrawSketch
 import com.canvas.sketch.Sketch
 import nstv.design.theme.ComposableSheepTheme
 import nstv.sheep.model.FluffStyle
@@ -24,7 +23,6 @@ import trnt.sheepsketches.draw.drawFlowFieldFluff
 // Prob use slider for this 👀
 private val DotCount = 30
 
-// TODO use noise and create flow field
 @Composable
 fun FlowFieldFluff(modifier: Modifier = Modifier) {
     val sheep = remember { Sheep() }
@@ -37,7 +35,6 @@ fun FlowFieldFluff(modifier: Modifier = Modifier) {
     }
 }
 
-// TODO use noise and create flow field
 @Composable
 fun FlowFieldFluffSheep(
     modifier: Modifier,

@@ -26,12 +26,8 @@ import nstv.sheep.parts.drawHead
 import nstv.sheep.parts.drawLegs
 import nstv.sheep.parts.getFluffPath
 import nstv.sheep.parts.getFluffPoints
-import trnt.sheepsketches.draw.SketchWithCache
+import com.canvas.sketch.SimpleSketchWithCache
 
-// Prob use slider for this 👀
-private val DotCount = 30
-
-// TODO use noise and create flow field
 @Composable
 fun GradientShaderFluff(modifier: Modifier = Modifier) {
     val sheep = remember { Sheep() }
@@ -47,7 +43,7 @@ fun GradientShaderFluff(modifier: Modifier = Modifier) {
                     .wrapContentSize()
                     .padding(16.dp),
             ) {
-                Text(text = "Flow Field Fluff requires Android 13 (API 33)!")
+                Text(text = "Shaders Fluff requires Android 13 (API 33)!")
             }
         }
     }
@@ -65,7 +61,7 @@ fun GradientShaderFluffSheep(
     glassesTranslation: Float = sheep.glassesTranslation,
     showGuidelines: Boolean = false,
 ) {
-    SketchWithCache(modifier = modifier) { time ->
+    SimpleSketchWithCache(modifier = modifier) { time ->
         val circleRadius = size.width * 0.3f
         val circleCenterOffset = Offset(size.width / 2f, size.height / 2f)
         val fluffPoints: List<Offset> = getFluffPoints(

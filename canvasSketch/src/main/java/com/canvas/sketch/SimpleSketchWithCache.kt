@@ -1,4 +1,4 @@
-package trnt.sheepsketches.draw
+package com.canvas.sketch
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.DrawResult
 import androidx.compose.ui.draw.drawWithCache
 
 @Composable
-fun SketchWithCache(
+fun SimpleSketchWithCache(
     modifier: Modifier = Modifier,
     speed: Float = 0.01f,
     onBuildDrawCache: CacheDrawScope.(time: State<Float>) -> DrawResult

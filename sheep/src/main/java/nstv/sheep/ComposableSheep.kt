@@ -90,8 +90,34 @@ fun ComposableSheep(
 }
 
 fun DrawScope.drawComposableSheep(
-    sheep: Sheep = Sheep(),
+    sheep: Sheep = Sheep(FluffStyle.Uniform(10)),
     fluffColor: Color = sheep.fluffColor,
+    headColor: Color = sheep.headColor,
+    legColor: Color = sheep.legColor,
+    eyeColor: Color = sheep.eyeColor,
+    glassesColor: Color = sheep.glassesColor,
+    glassesTranslation: Float = sheep.glassesTranslation,
+    showGuidelines: Boolean = false,
+    circleRadius: Float = getDefaultSheepRadius(),
+    circleCenterOffset: Offset = center,
+) {
+    drawComposableSheep(
+        sheep = sheep,
+        fluffBrush = SolidColor(fluffColor),
+        headColor = headColor,
+        legColor = legColor,
+        eyeColor = eyeColor,
+        glassesColor = glassesColor,
+        glassesTranslation = glassesTranslation,
+        showGuidelines = showGuidelines,
+        circleRadius = circleRadius,
+        circleCenterOffset = circleCenterOffset
+    )
+}
+
+fun DrawScope.drawComposableSheep(
+    sheep: Sheep = Sheep(FluffStyle.Uniform(10)),
+    fluffBrush: Brush,
     headColor: Color = sheep.headColor,
     legColor: Color = sheep.legColor,
     eyeColor: Color = sheep.eyeColor,
@@ -113,7 +139,7 @@ fun DrawScope.drawComposableSheep(
         circleCenterOffset = circleCenterOffset,
         circleRadius = circleRadius,
         fluffStyle = sheep.fluffStyle,
-        fluffBrush = SolidColor(fluffColor),
+        fluffBrush = fluffBrush,
         showGuidelines = showGuidelines
     )
 

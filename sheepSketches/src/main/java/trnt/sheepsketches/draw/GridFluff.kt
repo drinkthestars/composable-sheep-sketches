@@ -1,8 +1,6 @@
 package trnt.sheepsketches.draw
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode.Companion.DstOver
-import androidx.compose.ui.graphics.BlendMode.Companion.SrcOver
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.canvas.sketch.TWO_PI
@@ -10,7 +8,6 @@ import com.canvas.sketch.lerp
 import com.canvas.sketch.map
 import glm_.Java
 import glm_.glm
-import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import kotlin.math.cos
 import kotlin.math.sin

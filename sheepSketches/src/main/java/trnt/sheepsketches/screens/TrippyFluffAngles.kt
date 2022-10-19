@@ -3,6 +3,7 @@ package trnt.sheepsketches.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -21,7 +22,9 @@ import glm_.Detail.simplex
 import glm_.vec2.Vec2
 import nstv.canvasExtensions.maths.TotalPercentage
 import nstv.canvasExtensions.nextItemLoop
+import nstv.design.theme.Grid
 import nstv.design.theme.SheepColor
+import nstv.design.theme.components.LabeledText
 import nstv.sheep.model.FluffStyle
 import nstv.sheep.parts.drawFluff
 import nstv.sheep.parts.drawHead
@@ -74,10 +77,14 @@ fun TrippyFluffAngles(modifier: Modifier = Modifier) {
 
             drawHead()
         }
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Current Change Style: ${changeStyle.name}"
+        LabeledText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = Grid.One),
+            label = "Current Change Style: ",
+            body = changeStyle.name,
         )
+
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {

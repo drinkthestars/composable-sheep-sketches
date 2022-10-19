@@ -148,3 +148,28 @@ fun Offset.squareDistanceToOffset(offset: Offset): Float =
 fun Offset.getSlopeTo(offset: Offset): Float {
     return (offset.y - this.y).div(offset.x - this.x)
 }
+
+/**
+ * Angle utils
+ */
+fun Float.toRadians(): Float {
+    return Math.toRadians(this.toDouble()).toFloat()
+}
+
+fun Float.toDegrees(): Float {
+    return Math.toDegrees(this.toDouble()).toFloat()
+}
+
+/**
+ * Fibonacci utils
+ */
+fun getFibonacciSequence(size: Int): List<Int> {
+    if (size == 0) return emptyList()
+    if (size == 1) return listOf(0)
+
+    val sequence = mutableListOf(0, 1)
+    for (index in 2 until size) {
+        sequence.add(sequence[index - 1] + sequence[index - 2])
+    }
+    return sequence
+}

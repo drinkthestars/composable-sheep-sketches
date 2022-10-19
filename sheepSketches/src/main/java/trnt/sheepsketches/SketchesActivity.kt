@@ -44,7 +44,7 @@ import trnt.sheepsketches.Screen.values
 import trnt.sheepsketches.screens.FlowFieldFluff
 import trnt.sheepsketches.screens.GaussianGridFluff
 import trnt.sheepsketches.screens.GradientShaderFluff
-import trnt.sheepsketches.screens.GridFluff
+import trnt.sheepsketches.screens.GridFluffScreen
 import trnt.sheepsketches.screens.SpiralScreen
 import trnt.sheepsketches.screens.TrippyFluffAngles
 import trnt.sheepsketches.screens.TrippyFluffPath
@@ -126,7 +126,7 @@ class SketchesActivity : ComponentActivity() {
                         ) { screen ->
                             when (screen) {
                                 SPIRAL -> SpiralScreen()
-                                GRID_FLUFF -> GridFluff()
+                                GRID_FLUFF -> GridFluffScreen()
                                 GAUSSIAN_GRID_FLUFF -> GaussianGridFluff()
                                 FLOW_FIELD_FLUFF -> FlowFieldFluff()
                                 FLUFF_ANGLES -> TrippyFluffAngles()

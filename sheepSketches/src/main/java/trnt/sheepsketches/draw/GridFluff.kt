@@ -152,7 +152,137 @@ private fun hue(
     destMax = minHue
 ).coerceIn(minHue, maxHue)
 
-fun DrawScope.drawGridFluff(
+fun DrawScope.drawStaticGridFluff(
+    circleRadius: Float,
+    circleCenterOffset: Offset,
+    dotCount: Int
+) {
+    (0 until dotCount).forEach { x ->
+        (0 until dotCount).forEach { y ->
+            // working between 0 and 1 aka U/V Space
+            val u = x / (dotCount - 1).toFloat()
+            val v = y / (dotCount - 1).toFloat()
+
+            // lerp to get a value between 0 and 1
+            val posX = lerp(
+                min = circleCenterOffset.x - circleRadius,
+                max = circleCenterOffset.x + circleRadius,
+                norm = u
+            )
+            val posY = lerp(
+                min = circleCenterOffset.y - circleRadius,
+                max = circleCenterOffset.y + circleRadius,
+                norm = v
+            )
+
+            val isInCircle = isInCircle(posX, posY, circleRadius)
+            if (isInCircle) {
+                drawCircle(
+                    color = Color.DarkGray,
+                    radius = 15f,
+                    center = Offset(posX, posY)
+                )
+            }
+        }
+    }
+}
+
+fun DrawScope.drawDynamicSizeFluff(
+    time: Float,
+    circleRadius: Float,
+    circleCenterOffset: Offset,
+    dotCount: Int
+) {
+    (0 until dotCount).forEach { x ->
+        (0 until dotCount).forEach { y ->
+            // working between 0 and 1 aka U/V Space
+            val u = x / (dotCount - 1).toFloat()
+            val v = y / (dotCount - 1).toFloat()
+
+            // lerp to get a value between 0 and 1
+            val posX = lerp(
+                min = circleCenterOffset.x - circleRadius,
+                max = circleCenterOffset.x + circleRadius,
+                norm = u
+            )
+            val posY = lerp(
+                min = circleCenterOffset.y - circleRadius,
+                max = circleCenterOffset.y + circleRadius,
+                norm = v
+            )
+
+            val isInCircle = isInCircle(posX, posY, circleRadius)
+            if (isInCircle) {
+                val maxDotRad = 17f
+                val minDotRad = 6f
+                val effectiveRad = map(
+                    sin((v + time * 20) * TWO_PI),
+                    -2f, 2f,
+                    minDotRad, maxDotRad
+                )
+                val shiftedX = posX + map(
+                    sin((u + time * 10) * TWO_PI),
+                    -1f, 1f,
+                    -10f, 10f
+                )
+                val shiftedY = posY + map(
+                    glm.cos((v * 2f + time * 10) * TWO_PI),
+                    -1f, 1f,
+                    -10f, 10f
+                )
+
+                drawCircle(
+                    color = Color.DarkGray,
+                    radius = effectiveRad,
+                    center = Offset(shiftedX, shiftedY)
+                )
+            }
+        }
+    }
+}
+
+fun DrawScope.drawDynamicPositionFluff(
+    time: Float,
+    circleRadius: Float,
+    circleCenterOffset: Offset,
+    dotCount: Int
+) {
+    (0 until dotCount).forEach { x ->
+        (0 until dotCount).forEach { y ->
+            // working between 0 and 1 aka U/V Space
+            val u = x / (dotCount - 1).toFloat()
+            val v = y / (dotCount - 1).toFloat()
+
+            // lerp to get a value between 0 and 1
+            val posX = lerp(
+                min = circleCenterOffset.x - circleRadius,
+                max = circleCenterOffset.x + circleRadius,
+                norm = u
+            )
+            val posY = lerp(
+                min = circleCenterOffset.y - circleRadius,
+                max = circleCenterOffset.y + circleRadius,
+                norm = v
+            )
+
+            val isInCircle = isInCircle(posX, posY, circleRadius)
+            if (isInCircle) {
+                val shiftedX = posX + map(
+                    sin((u * 2f + time * 30) * TWO_PI),
+                    -1f, 1f,
+                    -15f, 15f
+                )
+                drawCircle(
+                    color = Color.DarkGray,
+                    radius = 15f,
+                    center = Offset(shiftedX, posY)
+                )
+            }
+        }
+    }
+}
+
+fun DrawScope.drawDynamicHue(
     time: Float,
     circleRadius: Float,
     circleCenterOffset: Offset,
@@ -206,7 +336,7 @@ fun DrawScope.drawGridFluff(
                         destMin = 300f,
                         destMax = 190f
                     ),
-                    saturation = 0.3f, value = 1f
+                    saturation = 0.7f, value = 1f
                 )
                 drawCircle(
                     color = color,

@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import com.canvas.sketch.map
 import glm_.glm
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import nstv.canvasExtensions.guidelines.GuidelineAlpha
 import nstv.canvasExtensions.guidelines.GuidelineStrokeWidth
@@ -41,6 +42,7 @@ fun DrawScope.drawSpiral(
     useSheep: Boolean = false,
     noiseSheep: Boolean = false,
     trippySheep: Boolean = false,
+    useVec2: Boolean = false,
     showGuidelines: Boolean = false,
 ) {
     val path = Path().apply { moveTo(center.x, center.y) }
@@ -57,19 +59,24 @@ fun DrawScope.drawSpiral(
         val x = radius * cos(timeShiftedAngle) + center.x
         val y = radius * sin(timeShiftedAngle) + center.y
 
-        val perlinNoise = glm.perlin(Vec3(x = angle, y = radius, z = time * 1.5f))
-        val angleDegrees = angle.toDegrees().mod(360f)
-        val angleNoise = if (noiseColor) {
+        val perlinNoise = if (useVec2) {
+            glm.perlin(Vec2(x = angle, y = time * 1.5f))
+        } else {
+            glm.perlin(Vec3(x = angle, y = radius, z = time * 1.5f))
+        }
+
+        val angleDegrees = angle.toDegrees()
+        val angleNoised = if (noiseColor) {
             map(
                 value = perlinNoise,
                 sourceMin = -1f,
                 sourceMax = 1f,
-                destMin = angleDegrees - noiseMax * 0.2f,
-                destMax = angleDegrees + noiseMax * 0.2f
+                destMin = angleDegrees - noiseMax * 10f,
+                destMax = angleDegrees + noiseMax * 10f
             )
         } else angleDegrees
 
-        val colorHue = angleNoise.toDegrees().mod(360f)
+        val colorHue = angleNoised.mod(360f)
         val basePointRadius = if (uniformPointDiameter) 28f else radius.div(10f)
         val pointRadius = if (noisePointDiameter) {
             map(

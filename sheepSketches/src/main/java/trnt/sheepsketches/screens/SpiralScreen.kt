@@ -50,6 +50,7 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
     var counterclockwise by remember { mutableStateOf(false) }
     var noiseColor by remember { mutableStateOf(false) }
     var noisePointDiameter by remember { mutableStateOf(false) }
+    var useVec2 by remember { mutableStateOf(false) }
 
     var showGuidelines by remember { mutableStateOf(false) }
 
@@ -87,6 +88,7 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
                     spin = spin,
                     noiseColor = noiseColor,
                     noisePointDiameter = noisePointDiameter,
+                    useVec2 = useVec2,
                 )
             }
         }
@@ -187,6 +189,13 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
                 text = "Noised Point Diameter",
                 checked = noisePointDiameter,
                 onCheckedChange = { noisePointDiameter = it }
+            )
+
+            CheckBoxLabel(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Use Vec2 instead of Vec3",
+                checked = useVec2,
+                onCheckedChange = { useVec2 = it }
             )
 
             CheckBoxLabel(

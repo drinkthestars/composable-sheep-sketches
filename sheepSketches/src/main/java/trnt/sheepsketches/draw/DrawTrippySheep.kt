@@ -13,15 +13,54 @@ import glm_.vec3.Vec3
 import nstv.canvasExtensions.maths.FullCircleAngleInRadians
 import nstv.design.theme.SheepColor
 import nstv.sheep.getDefaultSheepRadius
+import nstv.sheep.parts.drawHead
+import nstv.sheep.parts.drawLegs
 import kotlin.math.cos
 import kotlin.math.sin
 
 private const val AngleStep = 0.1f
 
+fun DrawScope.drawTrippySheep(
+    time: Float,
+    noiseMax: Float = 2f,
+    usePerlin: Boolean = true,
+    circleRadius: Float = this.getDefaultSheepRadius(),
+    circleCenterOffset: Offset = this.center,
+    fluffBrush: Brush = SolidColor(SheepColor.Orange),
+) {
+    drawLegs(
+        circleRadius = circleRadius,
+        circleCenterOffset = circleCenterOffset,
+    )
+
+    if (usePerlin) {
+
+        drawTrippyFluffPathWithPerlin(
+            time = time,
+            noiseMax = noiseMax,
+            circleRadius = circleRadius,
+            circleCenterOffset = circleCenterOffset,
+            fluffBrush = fluffBrush,
+        )
+    } else {
+        drawTrippyFluffPathSimplex(
+            time = time,
+            noiseMax = noiseMax,
+            circleRadius = circleRadius,
+            circleCenterOffset = circleCenterOffset,
+            fluffBrush = fluffBrush,
+        )
+    }
+    drawHead(
+        circleRadius = circleRadius,
+        circleCenterOffset = circleCenterOffset,
+    )
+}
+
 fun DrawScope.drawTrippyFluffPathWithPerlin(
-    path: Path,
     time: Float,
     noiseMax: Float,
+    path: Path = Path(),
     circleRadius: Float = this.getDefaultSheepRadius(),
     circleCenterOffset: Offset = this.center,
     fluffBrush: Brush = SolidColor(SheepColor.Orange),

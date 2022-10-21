@@ -3,6 +3,7 @@ package trnt.sheepsketches.draw
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import com.canvas.sketch.map
@@ -38,8 +39,9 @@ fun DrawScope.drawSpiral(
     noisePointDiameter: Boolean = false,
     counterclockwise: Boolean = false,
     useSheep: Boolean = false,
+    noiseSheep: Boolean = false,
+    trippySheep: Boolean = false,
     showGuidelines: Boolean = false,
-
 ) {
     val path = Path().apply { moveTo(center.x, center.y) }
 
@@ -85,16 +87,36 @@ fun DrawScope.drawSpiral(
             path.apply { lineTo(newPoint.x, newPoint.y) }
         }
 
-        if (useSheep) {
-            drawComposableSheep(
-                fluffColor = Color.hsv(
-                    hue = colorHue,
-                    saturation = 1f,
-                    value = 1f
-                ),
-                circleRadius = pointRadius,
-                circleCenterOffset = newPoint,
-            )
+        val drawSheep = if (useSheep && noiseSheep) {
+            perlinNoise > 0f
+        } else useSheep
+
+        if (drawSheep) {
+            if (!trippySheep) {
+                drawComposableSheep(
+                    fluffColor = Color.hsv(
+                        hue = colorHue,
+                        saturation = 1f,
+                        value = 1f
+                    ),
+                    circleRadius = pointRadius,
+                    circleCenterOffset = newPoint,
+                )
+            } else {
+                drawTrippySheep(
+                    time = time,
+                    fluffBrush = SolidColor(
+                        Color.hsv(
+                            hue = colorHue,
+                            saturation = 1f,
+                            value = 1f
+                        )
+                    ),
+                    circleRadius = pointRadius,
+                    circleCenterOffset = newPoint,
+                    usePerlin = false,
+                )
+            }
         } else {
             drawCircle(
                 color = Color.hsv(

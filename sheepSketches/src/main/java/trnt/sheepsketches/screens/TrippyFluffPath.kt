@@ -11,22 +11,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import com.canvas.sketch.Sketch
 import nstv.design.theme.components.CheckBoxLabel
 import nstv.design.theme.components.SliderLabelValue
-import nstv.sheep.parts.drawHead
-import nstv.sheep.parts.drawLegs
-import trnt.sheepsketches.draw.drawTrippyFluffPathSimplex
-import trnt.sheepsketches.draw.drawTrippyFluffPathWithPerlin
+import trnt.sheepsketches.draw.drawTrippySheep
 
 @Composable
 fun TrippyFluffPath(modifier: Modifier = Modifier) {
 
     var noiseMax by remember { mutableStateOf(2f) }
     var usePerlin by remember { mutableStateOf(true) }
-    val path = remember { Path() }
 
     Column(
         modifier = modifier
@@ -39,24 +34,7 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .aspectRatio(1f)
         ) { time ->
-            path.reset()
-
-            drawLegs()
-
-            if (usePerlin) {
-
-                drawTrippyFluffPathWithPerlin(
-                    path = path,
-                    time = time,
-                    noiseMax = noiseMax
-                )
-            } else {
-                drawTrippyFluffPathSimplex(
-                    time = time,
-                    noiseMax = noiseMax
-                )
-            }
-            drawHead()
+            drawTrippySheep(time, noiseMax, usePerlin)
         }
 
         SliderLabelValue(

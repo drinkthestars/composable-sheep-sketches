@@ -121,7 +121,7 @@ fun DrawScope.drawSpiral(
                     ),
                     circleRadius = pointRadius,
                     circleCenterOffset = newPoint,
-                    usePerlin = false,
+                    noiseType = NoiseType.Simplex,
                 )
             }
         } else {

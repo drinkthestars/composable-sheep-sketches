@@ -2,100 +2,116 @@ package trnt.sheepsketches.draw
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import com.canvas.sketch.map
 import glm_.glm
+import glm_.noise
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import nstv.canvasExtensions.guidelines.GuidelineAlpha
 import nstv.canvasExtensions.maths.FullCircleAngleInRadians
 import nstv.design.theme.SheepColor
 import nstv.sheep.getDefaultSheepRadius
 import nstv.sheep.parts.drawHead
 import nstv.sheep.parts.drawLegs
 import kotlin.math.cos
+import kotlin.math.roundToLong
 import kotlin.math.sin
+import kotlin.random.Random
 
 private const val AngleStep = 0.1f
+
+enum class NoiseType {
+    Perlin,
+    Simplex,
+    Random,
+}
 
 fun DrawScope.drawTrippySheep(
     time: Float,
     noiseMax: Float = 2f,
-    usePerlin: Boolean = true,
+    noiseType: NoiseType = NoiseType.Perlin,
     circleRadius: Float = this.getDefaultSheepRadius(),
     circleCenterOffset: Offset = this.center,
     fluffBrush: Brush = SolidColor(SheepColor.Orange),
+    showGuidelines: Boolean = false,
 ) {
     drawLegs(
         circleRadius = circleRadius,
         circleCenterOffset = circleCenterOffset,
     )
 
-    if (usePerlin) {
+    drawTrippyFluff(
+        time = time,
+        noiseMax = noiseMax,
+        noiseType = noiseType,
+        circleRadius = circleRadius,
+        circleCenterOffset = circleCenterOffset,
+        fluffBrush = fluffBrush,
+        showGuidelines = showGuidelines,
+    )
 
-        drawTrippyFluffPathWithPerlin(
-            time = time,
-            noiseMax = noiseMax,
-            circleRadius = circleRadius,
-            circleCenterOffset = circleCenterOffset,
-            fluffBrush = fluffBrush,
-        )
-    } else {
-        drawTrippyFluffPathSimplex(
-            time = time,
-            noiseMax = noiseMax,
-            circleRadius = circleRadius,
-            circleCenterOffset = circleCenterOffset,
-            fluffBrush = fluffBrush,
-        )
-    }
     drawHead(
         circleRadius = circleRadius,
         circleCenterOffset = circleCenterOffset,
     )
 }
 
-fun DrawScope.drawTrippyFluffPathWithPerlin(
+fun DrawScope.drawTrippyFluff(
     time: Float,
     noiseMax: Float,
-    path: Path = Path(),
+    noiseType: NoiseType,
     circleRadius: Float = this.getDefaultSheepRadius(),
     circleCenterOffset: Offset = this.center,
     fluffBrush: Brush = SolidColor(SheepColor.Orange),
+    showGuidelines: Boolean = false,
 ) {
-
+    println("--------- noiseType: $noiseType ------ ")
+    val path = Path()
     val minRadius = circleRadius * 0.95f
     val maxRadius = circleRadius * 1.2f
 
+    val points = mutableListOf<Offset>()
+
     var angle = 0.0f
     while (angle < FullCircleAngleInRadians) {
-        val timeShiftedRadius = angle + time * 0.005f
-
-        val cosAngle = cos(angle)
-        val sinAngle = sin(angle)
 
         val xOffset = map(
-            value = cos(timeShiftedRadius + time * 10f),
+            value = cos(angle),
             sourceMin = -1f,
             sourceMax = 1f,
             destMin = 0f,
             destMax = noiseMax
         )
+
         val yOffset = map(
-            value = sin(timeShiftedRadius + time * 3f),
+            value = sin(angle),
             sourceMin = -1f,
             sourceMax = 1f,
             destMin = 0f,
             destMax = noiseMax
         )
 
-        // 3d perlin noise for closed path
-        val perlinNoise = glm.perlin(Vec3(x = xOffset, y = yOffset, z = time * 0.7f))
+        val noise = when (noiseType) {
+            NoiseType.Perlin -> glm.perlin(Vec2(x = xOffset, y = yOffset + time))
+            NoiseType.Simplex -> glm.simplex(Vec2(x = xOffset, y = yOffset + time))
+            NoiseType.Random -> Random(
+                (xOffset + yOffset + time).times(100).roundToLong()
+            ).nextLong(-100, 100).div(100f)
+        }
 
-        val r = map(perlinNoise, -1f, 1f, minRadius, maxRadius)
-        val point = Offset(r * cosAngle, r * sinAngle) + circleCenterOffset
+        println("noise for angle $angle: $noise")
+
+        val r = map(noise, -1f, 1f, minRadius, maxRadius)
+        val point = Offset(r * cos(angle), r * sin(angle)) + circleCenterOffset
+        points.add(point)
+
         when (angle) {
             0f -> path.moveTo(point.x, point.y)
             else -> path.lineTo(point.x, point.y)
@@ -105,46 +121,26 @@ fun DrawScope.drawTrippyFluffPathWithPerlin(
     }
 
     drawPath(path = path, brush = fluffBrush, style = Fill)
-}
 
-fun DrawScope.drawTrippyFluffPathSimplex(
-    time: Float,
-    noiseMax: Float,
-    circleRadius: Float = this.getDefaultSheepRadius(),
-    circleCenterOffset: Offset = this.center,
-    fluffBrush: Brush = SolidColor(SheepColor.Orange),
-) {
-    val pointList = mutableListOf<Offset>()
-    val minRadius = circleRadius * 0.95f
-    val maxRadius = circleRadius * 1.2f
-
-    var angle = 0.0
-    while (angle < FullCircleAngleInRadians) {
-        val cosAngle = cos(angle).toFloat()
-        val sinAngle = glm.sin(angle).toFloat()
-
-        val xOffset = map(cosAngle, -1f, 1f, 0f, noiseMax)
-        val yOffset = map(sinAngle, -1f, 1f, 0f, noiseMax)
-        val noise =
-            glm.simplex(
-                Vec2(
-                    xOffset, yOffset + time
-                )
-            )
-        val r = map(noise, -1f, 1f, minRadius, maxRadius)
-        pointList.add(Offset(r * cosAngle, r * sinAngle) + circleCenterOffset)
-        angle += AngleStep
+    if (showGuidelines) {
+        drawCircle(
+            color = SheepColor.Black.copy(alpha = GuidelineAlpha.normal),
+            radius = minRadius,
+            style = Stroke(4f),
+            center = circleCenterOffset,
+        )
+        drawCircle(
+            color = SheepColor.Black.copy(alpha = GuidelineAlpha.normal),
+            radius = maxRadius,
+            center = circleCenterOffset,
+            style = Stroke(4f),
+        )
+        drawPoints(
+            points = points,
+            pointMode = PointMode.Points,
+            color = Color.Blue.copy(alpha = GuidelineAlpha.normal),
+            strokeWidth = 16f,
+            cap = StrokeCap.Round,
+        )
     }
-    pointList.add(pointList.first())
-
-    val path = Path().apply {
-        pointList.firstOrNull()?.let {
-            moveTo(it.x, it.y)
-            pointList.forEach { offset ->
-                lineTo(offset.x, offset.y)
-            }
-        }
-    }
-
-    drawPath(path = path, brush = fluffBrush, style = Fill)
 }

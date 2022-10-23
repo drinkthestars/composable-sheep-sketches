@@ -36,7 +36,6 @@ import trnt.sheepsketches.draw.drawTrippySheep
 fun TrippyFluffPath(modifier: Modifier = Modifier) {
 
     var noiseMax by remember { mutableStateOf(2f) }
-    var usePerlin by remember { mutableStateOf(true) }
     var useGradientShader by remember { mutableStateOf(false) }
     val path = remember { Path() }
     var noiseType by remember { mutableStateOf(NoiseType.Perlin) }

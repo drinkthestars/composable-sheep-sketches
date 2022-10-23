@@ -8,9 +8,60 @@ import com.canvas.sketch.lerp
 import com.canvas.sketch.map
 import glm_.Java
 import glm_.glm
+import glm_.glm.PIf
 import glm_.vec4.Vec4
 import kotlin.math.cos
 import kotlin.math.sin
+
+fun DrawScope.drawLineAnglesFluff(
+    angleDegrees: Float,
+    circleRadius: Float,
+    circleCenterOffset: Offset,
+    dotCount: Int
+) {
+    (0 until dotCount).forEach { x ->
+        (0 until dotCount).forEach { y ->
+            // working between 0 and 1 aka U/V Space
+            val u = x / (dotCount - 1).toFloat()
+            val v = y / (dotCount - 1).toFloat()
+
+            // lerp to get a value between 0 and 1
+            val posX = lerp(
+                min = circleCenterOffset.x - circleRadius,
+                max = circleCenterOffset.x + circleRadius,
+                norm = u
+            )
+            val posY = lerp(
+                min = circleCenterOffset.y - circleRadius,
+                max = circleCenterOffset.y + circleRadius,
+                norm = v
+            )
+
+            val isInCircle = isInCircle(posX, posY, circleRadius)
+            if (isInCircle) {
+                // Lines 4D NOISE
+                val r = 35f
+                val startX = posX - r / 2f
+                val startY = posY - r / 2f
+                val radians = angleDegrees * PIf/180f
+
+                val endX = startX + (r * sin(radians))
+                val endY = startY + (r * cos(radians))
+
+                val hue = map(angleDegrees, 0f, 360f, 170f, 300f)
+                val color = Color.hsv(
+                    hue = hue, saturation = 1f, value = 0f
+                )
+                drawLine(
+                    start = Offset(startX, startY),
+                    strokeWidth = 4f,
+                    end = Offset(endX, endY),
+                    color = color
+                )
+            }
+        }
+    }
+}
 
 fun DrawScope.drawFlowFieldFluff(
     time: Float,
@@ -55,8 +106,10 @@ fun DrawScope.drawFlowFieldFluff(
 
                 val endX = startX + (r * sin(radians))
                 val endY = startY + (r * cos(radians))
+
                 // Rainbow
                 // val hue = (noise * 360f).absoluteValue
+
                 val hue = map(noise, -1f, 1f, 170f, 300f)
                 val color = Color.hsv(
                     hue = hue, saturation = 1f, value = 1f
@@ -155,7 +208,8 @@ private fun hue(
 fun DrawScope.drawStaticGridFluff(
     circleRadius: Float,
     circleCenterOffset: Offset,
-    dotCount: Int
+    dotCount: Int,
+    radius: Float = 15f
 ) {
     (0 until dotCount).forEach { x ->
         (0 until dotCount).forEach { y ->
@@ -179,7 +233,7 @@ fun DrawScope.drawStaticGridFluff(
             if (isInCircle) {
                 drawCircle(
                     color = Color.DarkGray,
-                    radius = 15f,
+                    radius = radius,
                     center = Offset(posX, posY)
                 )
             }
@@ -191,7 +245,13 @@ fun DrawScope.drawDynamicSizeFluff(
     time: Float,
     circleRadius: Float,
     circleCenterOffset: Offset,
-    dotCount: Int
+    dotCount: Int,
+    minDotRad: Float,
+    maxDotRad: Float,
+    xAbsVariance: Float,
+    yAbsVariance: Float,
+    xFreq: Float,
+    yFreq: Float,
 ) {
     (0 until dotCount).forEach { x ->
         (0 until dotCount).forEach { y ->
@@ -213,22 +273,20 @@ fun DrawScope.drawDynamicSizeFluff(
 
             val isInCircle = isInCircle(posX, posY, circleRadius)
             if (isInCircle) {
-                val maxDotRad = 17f
-                val minDotRad = 6f
                 val effectiveRad = map(
                     sin((v + time * 20) * TWO_PI),
                     -2f, 2f,
                     minDotRad, maxDotRad
                 )
                 val shiftedX = posX + map(
-                    sin((u + time * 10) * TWO_PI),
+                    sin((u * xFreq + time * 10) * TWO_PI),
                     -1f, 1f,
-                    -10f, 10f
+                    -xAbsVariance, xAbsVariance
                 )
                 val shiftedY = posY + map(
-                    glm.cos((v * 2f + time * 10) * TWO_PI),
+                    glm.cos((v * yFreq + time * 10) * TWO_PI),
                     -1f, 1f,
-                    -10f, 10f
+                    -yAbsVariance, yAbsVariance
                 )
 
                 drawCircle(
@@ -245,7 +303,10 @@ fun DrawScope.drawDynamicPositionFluff(
     time: Float,
     circleRadius: Float,
     circleCenterOffset: Offset,
-    dotCount: Int
+    dotCount: Int,
+    minVariance: Float = -15f,
+    maxVariance: Float = 15f,
+    radius: Float = 15f
 ) {
     (0 until dotCount).forEach { x ->
         (0 until dotCount).forEach { y ->
@@ -270,11 +331,11 @@ fun DrawScope.drawDynamicPositionFluff(
                 val shiftedX = posX + map(
                     sin((u * 2f + time * 30) * TWO_PI),
                     -1f, 1f,
-                    -15f, 15f
+                    minVariance, maxVariance
                 )
                 drawCircle(
                     color = Color.DarkGray,
-                    radius = 15f,
+                    radius = radius,
                     center = Offset(shiftedX, posY)
                 )
             }
@@ -286,7 +347,17 @@ fun DrawScope.drawDynamicHue(
     time: Float,
     circleRadius: Float,
     circleCenterOffset: Offset,
-    dotCount: Int
+    dotCount: Int,
+    minDotRad: Float = 5f,
+    maxDotRad: Float = 17f,
+    xAbsVariance: Float = 10f,
+    yAbsVariance: Float= 10f,
+    xFreq: Float = 1f,
+    yFreq: Float = 2f,
+    hueMax: Float = 300f,
+    hueMin: Float = 190f,
+    hueSat: Float = 70f,
+    hueValue: Float = 100f
 ) {
     (0 until dotCount).forEach { x ->
         (0 until dotCount).forEach { y ->
@@ -308,22 +379,20 @@ fun DrawScope.drawDynamicHue(
 
             val isInCircle = isInCircle(posX, posY, circleRadius)
             if (isInCircle) {
-                val maxDotRad = 17f
-                val minDotRad = 5f
                 val effectiveRad = map(
                     sin((v + time * 20) * TWO_PI) + glm.cos((u + time * 20) * TWO_PI),
                     -2f, 2f,
                     minDotRad, maxDotRad
                 )
                 val shiftedX = posX + map(
-                    sin((u + time * 10) * TWO_PI),
+                    sin((u * xFreq + time * 10) * TWO_PI),
                     -1f, 1f,
-                    -10f, 10f
+                    -xAbsVariance, xAbsVariance
                 )
                 val shiftedY = posY + map(
-                    glm.cos((v * 2f + time * 10) * TWO_PI),
+                    glm.cos((v * yFreq + time * 10) * TWO_PI),
                     -1f, 1f,
-                    -10f, 10f
+                    -yAbsVariance, yAbsVariance
                 )
 
                 // Slightly different effect
@@ -333,10 +402,10 @@ fun DrawScope.drawDynamicHue(
                         value = effectiveRad,
                         sourceMin = minDotRad,
                         sourceMax = maxDotRad,
-                        destMin = 300f,
-                        destMax = 190f
+                        destMin = hueMax,
+                        destMax = hueMin
                     ),
-                    saturation = 0.7f, value = 1f
+                    saturation = hueSat/100f, value = hueValue/100f
                 )
                 drawCircle(
                     color = color,

@@ -24,6 +24,7 @@ fun SliderLabelValue(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    steps: Int = 0,
     showDecimal: Boolean = false,
     onValueChangeFinished: () -> Unit = {}
 ) {
@@ -44,6 +45,7 @@ fun SliderLabelValue(
             value = value,
             valueRange = valueRange,
             onValueChange = { onValueChange(round(it)) },
+            steps = steps,
             onValueChangeFinished = onValueChangeFinished
         )
         Text(

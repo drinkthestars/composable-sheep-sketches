@@ -4,10 +4,10 @@ import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,30 +15,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.canvas.sketch.SimpleSketchWithCache
-import nstv.design.theme.ComposableSheepTheme
+import com.canvas.sketch.SketchWithCache
+import glm_.value
 import nstv.design.theme.Grid
 import nstv.design.theme.TextUnit
 import nstv.sheep.drawComposableSheep
-import nstv.sheep.model.FluffStyle
 import nstv.sheep.model.Sheep
 
 @Composable
 fun GradientShaderFluff(modifier: Modifier = Modifier) {
     val sheep = remember { Sheep() }
+
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.onErrorContainer,
                 contentColor = MaterialTheme.colorScheme.onError
             ),
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
         ) {
             Text(
                 modifier = Modifier.padding(Grid.Two),
@@ -61,10 +56,13 @@ fun GradientShaderFluff(modifier: Modifier = Modifier) {
 fun GradientShaderFluffSheep(
     modifier: Modifier,
     sheep: Sheep,
-    gradientShader: RuntimeShader = remember { getGradientShader() },
+    gradientShader: RuntimeShader = remember { gradientShader() },
     gradientShaderBrush: ShaderBrush = remember { ShaderBrush(gradientShader) },
 ) {
-    SimpleSketchWithCache(modifier = modifier) { time ->
+    SketchWithCache(
+        speed = 10f,
+        modifier = modifier
+    ) { time ->
         gradientShader.setFloatUniform(
             "iResolution",
             this.size.width, this.size.height
@@ -80,21 +78,8 @@ fun GradientShaderFluffSheep(
     }
 }
 
-@Preview(showBackground = true, widthDp = 320, backgroundColor = 0xFF292C34)
-@Composable
-private fun FlowFieldFluffSheepPreview() {
-    ComposableSheepTheme {
-        FlowFieldFluffSheep(
-            modifier = Modifier.size(300.dp),
-            sheep = Sheep(FluffStyle.Random()),
-            fluffBrush = SolidColor(Color.LightGray),
-            showGuidelines = false
-        )
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun getGradientShader() = RuntimeShader(
+internal fun gradientShader() = RuntimeShader(
     """
         uniform float2 iResolution;
         uniform float iTime;

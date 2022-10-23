@@ -30,8 +30,7 @@ fun GaussianGridFluff(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         GaussianGridFluffSheep(
             modifier = Modifier.fillMaxSize(),
-            sheep = sheep,
-            fluffBrush = SolidColor(sheep.fluffColor)
+            sheep = sheep
         )
     }
 }
@@ -40,7 +39,6 @@ fun GaussianGridFluff(modifier: Modifier = Modifier) {
 fun GaussianGridFluffSheep(
     modifier: Modifier,
     sheep: Sheep,
-    fluffBrush: Brush,
     headColor: Color = sheep.headColor,
     legColor: Color = sheep.legColor,
     eyeColor: Color = sheep.eyeColor,
@@ -97,7 +95,6 @@ private fun PreviewGaussianGridFluffSheep() {
         GaussianGridFluffSheep(
             modifier = Modifier.size(300.dp),
             sheep = Sheep(FluffStyle.Random()),
-            fluffBrush = SolidColor(Color.LightGray),
             showGuidelines = false
         )
     }

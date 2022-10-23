@@ -1,10 +1,16 @@
 package trnt.sheepsketches.screens
 
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,8 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.tooling.preview.Preview
 import com.canvas.sketch.Sketch
+import com.canvas.sketch.SketchWithCache
+import glm_.value
+import nstv.design.theme.Grid
+import nstv.design.theme.TextUnit
 import nstv.design.theme.components.CheckBoxLabel
 import nstv.design.theme.components.SliderLabelValue
 import nstv.sheep.parts.drawHead
@@ -26,37 +37,79 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
 
     var noiseMax by remember { mutableStateOf(2f) }
     var usePerlin by remember { mutableStateOf(true) }
+    var useGradientShader by remember { mutableStateOf(false) }
     val path = remember { Path() }
+
+    val gradientShader = remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            gradientShader()
+        } else {
+            null
+        }
+    }
+    val gradientShaderBrush = remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && gradientShader != null) {
+            ShaderBrush(gradientShader)
+        } else {
+            null
+        }
+    }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Sketch(
+        SketchWithCache(
             speed = 1f,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
         ) { time ->
-            path.reset()
-
-            drawLegs()
-
-            if (usePerlin) {
-
-                drawTrippyFluffPathWithPerlin(
-                    path = path,
-                    time = time,
-                    noiseMax = noiseMax
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                gradientShader?.setFloatUniform(
+                    "iResolution",
+                    this.size.width, this.size.height
                 )
-            } else {
-                drawTrippyFluffPathSimplex(
-                    time = time,
-                    noiseMax = noiseMax
-                )
+                gradientShader?.setFloatUniform("iTime", time.value * 2f)
             }
-            drawHead()
+
+            onDrawBehind {
+                path.reset()
+
+                drawLegs()
+
+                if (usePerlin) {
+                    if (gradientShaderBrush != null && useGradientShader) {
+                        drawTrippyFluffPathWithPerlin(
+                            path = path,
+                            time = time,
+                            noiseMax = noiseMax,
+                            fluffBrush = gradientShaderBrush
+                        )
+                    } else {
+                        drawTrippyFluffPathWithPerlin(
+                            path = path,
+                            time = time,
+                            noiseMax = noiseMax
+                        )
+                    }
+                } else {
+                    if (gradientShaderBrush != null && useGradientShader) {
+                        drawTrippyFluffPathSimplex(
+                            time = time,
+                            noiseMax = noiseMax,
+                            fluffBrush = gradientShaderBrush
+                        )
+                    } else {
+                        drawTrippyFluffPathSimplex(
+                            time = time,
+                            noiseMax = noiseMax
+                        )
+                    }
+                }
+                drawHead()
+            }
         }
 
         SliderLabelValue(
@@ -76,6 +129,32 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
                 usePerlin = checked
             }
         )
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.onErrorContainer,
+                    contentColor = MaterialTheme.colorScheme.onError
+                ),
+                modifier = modifier
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    modifier = Modifier.padding(Grid.Two),
+                    fontSize = TextUnit.Sixteen,
+                    text = "Use Android 13 (API 33) for gradient shader option!"
+                )
+            }
+        } else {
+            CheckBoxLabel(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Use Gradient Shader",
+                checked = useGradientShader,
+                onCheckedChange = { checked ->
+                    useGradientShader = checked
+                }
+            )
+        }
     }
 }
 

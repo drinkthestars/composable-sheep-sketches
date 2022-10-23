@@ -30,7 +30,6 @@ fun FlowFieldFluff(modifier: Modifier = Modifier) {
         FlowFieldFluffSheep(
             modifier = Modifier.fillMaxSize(),
             sheep = sheep,
-            fluffBrush = SolidColor(sheep.fluffColor)
         )
     }
 }
@@ -39,7 +38,6 @@ fun FlowFieldFluff(modifier: Modifier = Modifier) {
 fun FlowFieldFluffSheep(
     modifier: Modifier,
     sheep: Sheep,
-    fluffBrush: Brush,
     headColor: Color = sheep.headColor,
     legColor: Color = sheep.legColor,
     eyeColor: Color = sheep.eyeColor,
@@ -86,7 +84,6 @@ private fun FlowFieldFluffSheepPreview() {
         FlowFieldFluffSheep(
             modifier = Modifier.size(300.dp),
             sheep = Sheep(FluffStyle.Random()),
-            fluffBrush = SolidColor(Color.LightGray),
             showGuidelines = false
         )
     }

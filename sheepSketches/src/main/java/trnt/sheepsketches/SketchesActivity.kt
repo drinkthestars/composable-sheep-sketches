@@ -38,13 +38,17 @@ import trnt.sheepsketches.Screen.FLUFF_ANGLES
 import trnt.sheepsketches.Screen.FLUFF_PATH
 import trnt.sheepsketches.Screen.GAUSSIAN_GRID_FLUFF
 import trnt.sheepsketches.Screen.GRADIENT_SHADER
+import trnt.sheepsketches.Screen.BG_SHADER
 import trnt.sheepsketches.Screen.GRID_FLUFF
+import trnt.sheepsketches.Screen.LINE_ANGLES_FLUFF
 import trnt.sheepsketches.Screen.SPIRAL
 import trnt.sheepsketches.Screen.values
+import trnt.sheepsketches.screens.BackgroundShaderScreen
 import trnt.sheepsketches.screens.FlowFieldFluff
 import trnt.sheepsketches.screens.GaussianGridFluff
 import trnt.sheepsketches.screens.GradientShaderFluff
 import trnt.sheepsketches.screens.GridFluffScreen
+import trnt.sheepsketches.screens.LineAnglesFluffScreen
 import trnt.sheepsketches.screens.SpiralScreen
 import trnt.sheepsketches.screens.TrippyFluffAngles
 import trnt.sheepsketches.screens.TrippyFluffPath
@@ -53,10 +57,12 @@ private enum class Screen {
     SPIRAL,
     GRID_FLUFF,
     GAUSSIAN_GRID_FLUFF,
+    LINE_ANGLES_FLUFF,
     FLOW_FIELD_FLUFF,
     FLUFF_ANGLES,
     FLUFF_PATH,
-    GRADIENT_SHADER
+    GRADIENT_SHADER,
+    BG_SHADER,
 }
 
 private val InitialScreen = GRADIENT_SHADER
@@ -128,10 +134,12 @@ class SketchesActivity : ComponentActivity() {
                                 SPIRAL -> SpiralScreen()
                                 GRID_FLUFF -> GridFluffScreen()
                                 GAUSSIAN_GRID_FLUFF -> GaussianGridFluff()
+                                LINE_ANGLES_FLUFF -> LineAnglesFluffScreen()
                                 FLOW_FIELD_FLUFF -> FlowFieldFluff()
                                 FLUFF_ANGLES -> TrippyFluffAngles()
                                 FLUFF_PATH -> TrippyFluffPath()
                                 GRADIENT_SHADER -> GradientShaderFluff()
+                                BG_SHADER -> BackgroundShaderScreen()
                             }
                         }
                     }

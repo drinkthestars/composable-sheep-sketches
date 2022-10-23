@@ -65,7 +65,7 @@ private enum class Screen {
     BG_SHADER,
 }
 
-private val InitialScreen = GRADIENT_SHADER
+private val InitialScreen = FLUFF_PATH
 
 class SketchesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

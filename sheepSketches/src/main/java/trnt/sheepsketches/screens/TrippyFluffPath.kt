@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -20,17 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.tooling.preview.Preview
-import com.canvas.sketch.Sketch
 import com.canvas.sketch.SketchWithCache
 import glm_.value
+import nstv.canvasExtensions.nextItemLoop
 import nstv.design.theme.Grid
 import nstv.design.theme.TextUnit
 import nstv.design.theme.components.CheckBoxLabel
+import nstv.design.theme.components.LabeledText
 import nstv.design.theme.components.SliderLabelValue
-import nstv.sheep.parts.drawHead
-import nstv.sheep.parts.drawLegs
-import trnt.sheepsketches.draw.drawTrippyFluffPathSimplex
-import trnt.sheepsketches.draw.drawTrippyFluffPathWithPerlin
+import trnt.sheepsketches.draw.NoiseType
+import trnt.sheepsketches.draw.drawTrippySheep
 
 @Composable
 fun TrippyFluffPath(modifier: Modifier = Modifier) {
@@ -39,6 +39,9 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
     var usePerlin by remember { mutableStateOf(true) }
     var useGradientShader by remember { mutableStateOf(false) }
     val path = remember { Path() }
+    var noiseType by remember { mutableStateOf(NoiseType.Perlin) }
+    var showGuidelines by remember { mutableStateOf(false) }
+    var static by remember { mutableStateOf(false) }
 
     val gradientShader = remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -61,7 +64,7 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
             .verticalScroll(rememberScrollState())
     ) {
         SketchWithCache(
-            speed = 1f,
+            speed = if (static) 0f else 3f,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -77,40 +80,30 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
             onDrawBehind {
                 path.reset()
 
-                drawLegs()
-
-                if (usePerlin) {
-                    if (gradientShaderBrush != null && useGradientShader) {
-                        drawTrippyFluffPathWithPerlin(
-                            path = path,
-                            time = time,
-                            noiseMax = noiseMax,
-                            fluffBrush = gradientShaderBrush
-                        )
-                    } else {
-                        drawTrippyFluffPathWithPerlin(
-                            path = path,
-                            time = time,
-                            noiseMax = noiseMax
-                        )
-                    }
+                if (gradientShaderBrush != null && useGradientShader) {
+                    drawTrippySheep(
+                        time = time,
+                        noiseMax = noiseMax,
+                        noiseType = noiseType,
+                        showGuidelines = showGuidelines,
+                        fluffBrush = gradientShaderBrush
+                    )
                 } else {
-                    if (gradientShaderBrush != null && useGradientShader) {
-                        drawTrippyFluffPathSimplex(
-                            time = time,
-                            noiseMax = noiseMax,
-                            fluffBrush = gradientShaderBrush
-                        )
-                    } else {
-                        drawTrippyFluffPathSimplex(
-                            time = time,
-                            noiseMax = noiseMax
-                        )
-                    }
+                    drawTrippySheep(
+                        time = time,
+                        noiseMax = noiseMax,
+                        noiseType = noiseType,
+                        showGuidelines = showGuidelines,
+                    )
                 }
-                drawHead()
             }
         }
+
+        LabeledText(
+            modifier = Modifier.fillMaxWidth(),
+            label = "Current Noise Type: ",
+            body = noiseType.name,
+        )
 
         SliderLabelValue(
             text = "Max Noise",
@@ -121,12 +114,30 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
             }
         )
 
-        CheckBoxLabel(
+        Button(
             modifier = Modifier.fillMaxWidth(),
-            text = "Use Perlin",
-            checked = usePerlin,
-            onCheckedChange = { checked ->
-                usePerlin = checked
+            onClick = {
+                noiseType =
+                    NoiseType.values().nextItemLoop(NoiseType.valueOf(noiseType.name))
+            }
+        ) {
+            val text = "Change Type"
+            Text(text = text)
+        }
+
+        CheckBoxLabel(
+            text = "Show Guidelines",
+            checked = showGuidelines,
+            onCheckedChange = {
+                showGuidelines = it
+            }
+        )
+
+        CheckBoxLabel(
+            text = "Static",
+            checked = static,
+            onCheckedChange = {
+                static = it
             }
         )
 

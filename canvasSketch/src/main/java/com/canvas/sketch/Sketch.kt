@@ -166,7 +166,7 @@ fun Sketch(
     var boundsInWindow by remember { mutableStateOf(Rect.Zero) }
     val advance = remember { AnimationState(0f) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(speed) {
         while (isActive) {
             advance.animateTo(
                 targetValue = advance.value + speed,

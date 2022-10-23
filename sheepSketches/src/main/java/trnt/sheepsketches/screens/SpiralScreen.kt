@@ -1,10 +1,13 @@
 package trnt.sheepsketches.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.canvas.sketch.Sketch
+import nstv.canvasExtensions.guidelines.drawAxis
+import nstv.canvasExtensions.guidelines.drawGrid
 import nstv.canvasExtensions.nextItemLoop
 import nstv.design.theme.Grid
 import nstv.design.theme.components.CheckBoxLabel
@@ -38,11 +43,14 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
     var numberOfItems by remember { mutableStateOf(50) }
     var spiralType by remember { mutableStateOf(SpiralType.Archimedean) }
     var useSheep by remember { mutableStateOf(true) }
+    var noiseSheep by remember { mutableStateOf(false) }
+    var trippySheep by remember { mutableStateOf(false) }
     var uniformPointDiameter by remember { mutableStateOf(false) }
     var spin by remember { mutableStateOf(false) }
     var counterclockwise by remember { mutableStateOf(false) }
     var noiseColor by remember { mutableStateOf(false) }
     var noisePointDiameter by remember { mutableStateOf(false) }
+    var useVec2 by remember { mutableStateOf(false) }
 
     var showGuidelines by remember { mutableStateOf(false) }
 
@@ -51,24 +59,38 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
             .fillMaxWidth()
     ) {
         Spacer(modifier = modifier.padding(Grid.One))
-        Sketch(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
-            speed = 1f,
-        ) { time ->
-            drawSpiral(
-                time = time,
-                numberOfPoints = numberOfItems,
-                spiralType = spiralType,
-                uniformPointDiameter = uniformPointDiameter,
-                counterclockwise = counterclockwise,
-                useSheep = useSheep,
-                showGuidelines = showGuidelines,
-                spin = spin,
-                noiseColor = noiseColor,
-                noisePointDiameter = noisePointDiameter,
-            )
+                .aspectRatio(1f)
+        ) {
+            if (showGuidelines) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    drawGrid()
+                    drawAxis()
+                }
+            }
+
+            Sketch(
+                modifier = Modifier.fillMaxSize(),
+                speed = 1f,
+            ) { time ->
+                drawSpiral(
+                    time = time,
+                    numberOfPoints = numberOfItems,
+                    spiralType = spiralType,
+                    uniformPointDiameter = uniformPointDiameter,
+                    counterclockwise = counterclockwise,
+                    useSheep = useSheep,
+                    noiseSheep = noiseSheep,
+                    trippySheep = trippySheep,
+                    showGuidelines = showGuidelines,
+                    spin = spin,
+                    noiseColor = noiseColor,
+                    noisePointDiameter = noisePointDiameter,
+                    useVec2 = useVec2,
+                )
+            }
         }
 
         LabeledText(
@@ -113,6 +135,24 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
                 checked = useSheep,
                 onCheckedChange = { useSheep = it }
             )
+            AnimatedVisibility(visible = useSheep) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = Grid.Two)
+                ) {
+                    CheckBoxLabel(
+                        text = "Noised Sheep",
+                        checked = noiseSheep,
+                        onCheckedChange = { noiseSheep = it }
+                    )
+                    CheckBoxLabel(
+                        text = "Trippy Sheep",
+                        checked = trippySheep,
+                        onCheckedChange = { trippySheep = it }
+                    )
+                }
+            }
 
             CheckBoxLabel(
                 modifier = Modifier.fillMaxWidth(),
@@ -149,6 +189,13 @@ fun SpiralScreen(modifier: Modifier = Modifier) {
                 text = "Noised Point Diameter",
                 checked = noisePointDiameter,
                 onCheckedChange = { noisePointDiameter = it }
+            )
+
+            CheckBoxLabel(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Use Vec2 instead of Vec3",
+                checked = useVec2,
+                onCheckedChange = { useVec2 = it }
             )
 
             CheckBoxLabel(

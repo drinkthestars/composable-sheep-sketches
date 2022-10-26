@@ -20,10 +20,8 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "composable-sheep"
-include ':sheepCanvas'
 include ':design'
 include ':canvasExtensions'
 include ':sheep'
-include ':sheepAnimations'
 include ':canvasSketch'
 include ':sheepSketches'

@@ -3,15 +3,21 @@ package nstv.design.theme.components
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import nstv.design.theme.ComposableSheepTheme
 
 @Composable
-fun LabeledText(label: String, body: String) {
+fun LabeledText(
+    label: String,
+    body: String,
+    modifier: Modifier = Modifier
+) {
     Text(
-        buildAnnotatedString {
+        modifier = modifier,
+        text = buildAnnotatedString {
             withStyle(
                 MaterialTheme.typography.titleMedium.toSpanStyle()
                     .copy(color = MaterialTheme.colorScheme.onBackground)

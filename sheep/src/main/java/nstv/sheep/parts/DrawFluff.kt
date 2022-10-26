@@ -17,19 +17,19 @@ import nstv.canvasExtensions.maths.distanceToOffset
 import nstv.canvasExtensions.maths.getCircumferencePointForAngle
 import nstv.canvasExtensions.maths.getCurveControlPoint
 import nstv.canvasExtensions.maths.getMiddlePoint
+import nstv.sheep.getDefaultSheepRadius
 import nstv.sheep.model.FluffStyle
-import nstv.sheep.model.Sheep
 
 fun DrawScope.drawFluff(
-    sheep: Sheep,
-    circleRadius: Float,
-    circleCenterOffset: Offset,
+    fluffStyle: FluffStyle = FluffStyle.Random(),
+    circleRadius: Float = this.getDefaultSheepRadius(),
+    circleCenterOffset: Offset = this.center,
     fluffBrush: Brush = SolidColor(Color.LightGray),
     showGuidelines: Boolean = false
 ) {
 
     val fluffPoints: List<Offset> = getFluffPoints(
-        fluffPercentages = sheep.fluffStyle.fluffChunksPercentages,
+        fluffPercentages = fluffStyle.fluffChunksPercentages,
         radius = circleRadius,
         circleCenter = circleCenterOffset
     )
@@ -54,7 +54,7 @@ fun DrawScope.drawFluff(
 /**
  * Returns the coordinates (points) of the middle points between fluff chunks.
  */
-private fun getFluffPoints(
+fun getFluffPoints(
     fluffPercentages: List<Double>,
     radius: Float,
     circleCenter: Offset = Offset.Zero,

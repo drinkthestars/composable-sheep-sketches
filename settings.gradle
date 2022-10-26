@@ -14,11 +14,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://raw.githubusercontent.com/kotlin-graphics/mary/master"
+        }
     }
 }
 rootProject.name = "composable-sheep"
-include ':sheepCanvas'
 include ':design'
 include ':canvasExtensions'
 include ':sheep'
-include ':sheepAnimations'
+include ':canvasSketch'
+include ':sheepSketches'

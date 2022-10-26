@@ -11,13 +11,14 @@ import nstv.canvasExtensions.guidelines.GuidelineAlpha
 import nstv.canvasExtensions.guidelines.drawPoint
 import nstv.canvasExtensions.guidelines.drawRectGuideline
 import nstv.design.theme.SheepColor
-import nstv.sheep.model.Sheep
+import nstv.sheep.getDefaultSheepRadius
+import nstv.sheep.model.DefaultHeadRotationAngle
 
 fun DrawScope.drawHead(
-    circleCenterOffset: Offset,
-    circleRadius: Float,
-    sheep: Sheep,
-    headColor: Color,
+    circleCenterOffset: Offset = this.center,
+    circleRadius: Float = this.getDefaultSheepRadius(),
+    headAngle: Float = DefaultHeadRotationAngle,
+    headColor: Color = SheepColor.Skin,
     glassesColor: Color = Color.Black,
     eyeColor: Color = SheepColor.Eye,
     glassesTranslation: Float = 0f,
@@ -36,7 +37,6 @@ fun DrawScope.drawHead(
         y = circleCenterOffset.y - headSize.height.div(4f)
     )
 
-    val headAngle = sheep.headAngle
     val headCenter = headTopLeft + headSize.center
 
     // Head

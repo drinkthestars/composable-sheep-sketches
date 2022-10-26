@@ -1,25 +1,27 @@
 [versions]
 #kotlin
-coroutines = "1.5.2"
-serialization = "1.3.2"
+coroutines = "1.6.4"
+serialization = "1.4.0"
+glm = "0.9.9.1-4"
 
 #android
 material = "1.5.0"
 material3 = "1.0.0-alpha10"
-hilt = "2.40.5"
+hilt = "2.44"
 
 #jetpack
 core = "1.7.0"
-activity = "1.3.1"
-lifecycle = "2.4.1"
-room = "2.4.2"
+activity = "1.6.0"
+lifecycle = "2.5.1"
+room = "2.4.3"
 
 #compose
-compose-core = "1.1.1"
-compose-navigation = "2.4.0-alpha06"
+compose-core = "1.2.1"
+compose-compiler = "1.3.2"
+compose-navigation = "2.5.2"
 compose-navigation-hilt = "1.0.0"
-compose-paging = "1.0.0-alpha14"
-accompanist = "0.23.1"
+compose-paging = "1.0.0-alpha16"
+accompanist = "0.25.1"
 
 #testing
 jUnit = "4.13.2"
@@ -30,8 +32,8 @@ coroutinesTest = "1.5.2"
 mockWebServer = "4.9.3"
 
 #plugins
-gradle = "7.1.1"
-kotlin = "1.6.10"
+gradle = "7.3.0"
+kotlin = "1.7.20"
 ktlint = "10.2.1"
 detekt = "1.19.0"
 
@@ -43,6 +45,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+graphics-glm = { module = "kotlin.graphics:glm", version.ref = "glm" }
 
 #hilt
 hilt-core = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -55,9 +58,11 @@ jetpack-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", versi
 jetpack-lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "lifecycle" }
 
 #compose
+compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose-compiler" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose-core" }
 compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-core" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose-core" }
+compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-core" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 compose-extended-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-core" }
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activity" }
@@ -101,6 +106,7 @@ room = [
 ]
 
 compose-design = [
+    "compose-compiler",
     "compose-ui",
     "compose-ui-preview",
     "compose-material3",
@@ -113,6 +119,7 @@ compose-jetpack = [
     "compose-navigation",
     "compose-navigation-hilt",
 ]
+
 accompanist = [
     "accompanist-drawablepainter",
     "accompanist-systemuicontroller",
@@ -122,9 +129,10 @@ accompanist = [
 ]
 
 [plugins]
+kotlin-serialization = { id = "plugin.serialization", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-application = { id = "com.android.application", version.ref = "gradle" }
-library = { id = "com.android.library", version.ref = "gradle" }
-ktlint = { id = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
-detekt = { id = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "gradle" }
+android-library = { id = "com.android.library", version.ref = "gradle" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

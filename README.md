@@ -5,6 +5,11 @@ Repository used for the "Composable Sheep: The Creative Coding Epilogue" present
 ## 🎨 Sheep Sketches
 Find inside the *sheepSketches* module several playground screens to play around with Spirals, Paths, Grids, Noise, Shaders...AND **SHEEP**! 🐑
 
+
+## 🐑 More Sheep?
+This repo is a combination of [nicole-terc/composable-sheep](https://github.com/nicole-terc/composable-sheep) and [drinkthestars/compose-sketch](https://github.com/drinkthestars/compose-sketch)! Check them out for more sheep and creative coding.
+
+
 ### 🌀 Spiral Sheep
 #### Static Spirals
 
@@ -48,6 +53,3 @@ Find inside the *sheepSketches* module several playground screens to play around
 | Static                                                                                                                                            | Morph Position                                                                                                                                         | Morph Position,Size                                                                                                                                            | Morph Position,Size,Hue |
 |---------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|
 | <img alt="Static"  width="300" src="https://user-images.githubusercontent.com/2978958/197996842-caac09b6-e067-443b-aafb-c4f8349668a4.png"/> | <video alt="PositionSize"  width="400" src="https://user-images.githubusercontent.com/2978958/197996889-14c3eff5-8ca7-4701-ac74-6cf329259fba.mp4"/> | <video alt="PositionSize"  width="400" src="https://user-images.githubusercontent.com/2978958/197996880-34592b6e-f284-4a66-93d9-0940375cf4aa.mp4"/> | <video alt="Position"  width="400" src="https://user-images.githubusercontent.com/2978958/197996833-7106b0c7-5955-4689-a56b-04dabb0e2609.mp4"/> |
-
-### 🐑 🐏 More Sheep!
-This repo is a combination of [nicole-terc/composable-sheep](https://github.com/nicole-terc/composable-sheep) and [drinkthestars/compose-sketch](https://github.com/drinkthestars/compose-sketch)!

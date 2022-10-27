@@ -13,6 +13,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,28 +33,41 @@ import nstv.design.theme.components.SliderLabelValue
 import trnt.sheepsketches.draw.NoiseType
 import trnt.sheepsketches.draw.drawTrippySheep
 
+enum class ShaderType {
+    Gradient,
+    NoodleZoom,
+}
+
 @Composable
 fun TrippyFluffPath(modifier: Modifier = Modifier) {
 
     var noiseMax by remember { mutableStateOf(2f) }
-    var useGradientShader by remember { mutableStateOf(false) }
+    var useShader by remember { mutableStateOf(false) }
     val path = remember { Path() }
     var noiseType by remember { mutableStateOf(NoiseType.Perlin) }
+    var shaderType by remember { mutableStateOf(ShaderType.Gradient) }
     var showGuidelines by remember { mutableStateOf(false) }
     var static by remember { mutableStateOf(false) }
 
-    val gradientShader = remember {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            gradientShader()
-        } else {
-            null
+    val shader by remember {
+        derivedStateOf {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                when (shaderType) {
+                    ShaderType.Gradient -> gradientShader()
+                    ShaderType.NoodleZoom -> noodleZoomShader()
+                }
+            } else {
+                null
+            }
         }
     }
-    val gradientShaderBrush = remember {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && gradientShader != null) {
-            ShaderBrush(gradientShader)
-        } else {
-            null
+    val shaderBrush by remember {
+        derivedStateOf {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && shader != null) {
+                ShaderBrush(shader!!)
+            } else {
+                null
+            }
         }
     }
 
@@ -69,23 +83,23 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
                 .aspectRatio(1f)
         ) { time ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                gradientShader?.setFloatUniform(
+                shader?.setFloatUniform(
                     "iResolution",
                     this.size.width, this.size.height
                 )
-                gradientShader?.setFloatUniform("iTime", time.value * 2f)
+                shader?.setFloatUniform("iTime", time.value * 2f)
             }
 
             onDrawBehind {
                 path.reset()
 
-                if (gradientShaderBrush != null && useGradientShader) {
+                if (shaderBrush != null && useShader) {
                     drawTrippySheep(
                         time = time,
                         noiseMax = noiseMax,
                         noiseType = noiseType,
                         showGuidelines = showGuidelines,
-                        fluffBrush = gradientShaderBrush
+                        fluffBrush = shaderBrush!!
                     )
                 } else {
                     drawTrippySheep(
@@ -103,6 +117,13 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
             label = "Current Noise Type: ",
             body = noiseType.name,
         )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            LabeledText(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Current Shader Type: ",
+                body = if (useShader) shaderType.name else "None",
+            )
+        }
 
         SliderLabelValue(
             text = "Max Noise",
@@ -122,6 +143,21 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
         ) {
             val text = "Change Type"
             Text(text = text)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    if (useShader) {
+                        shaderType =
+                            ShaderType.values().nextItemLoop(ShaderType.valueOf(shaderType.name))
+                    }
+                }
+            ) {
+                val text = "Change Shader Type"
+                Text(text = text)
+            }
         }
 
         CheckBoxLabel(
@@ -158,10 +194,10 @@ fun TrippyFluffPath(modifier: Modifier = Modifier) {
         } else {
             CheckBoxLabel(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Use Gradient Shader",
-                checked = useGradientShader,
+                text = "Use shader",
+                checked = useShader,
                 onCheckedChange = { checked ->
-                    useGradientShader = checked
+                    useShader = checked
                 }
             )
         }
